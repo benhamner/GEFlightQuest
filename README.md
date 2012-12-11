@@ -5,12 +5,12 @@ This repo contains code for the [GE Flight Quest](http://www.gequest.com/c/fligh
 
 The code for doing this is split between two folders: 
 
-*PythonModule* - a python module named geflight that handles:
+**PythonModule** - a python module named geflight that handles:
 
    - FlightHistory files
    - ASDI files
 
-*DavidWeatherCode* - python scripts for handling the following sets of files:
+**DavidWeatherCode** - python scripts for handling the following sets of files:
 
    - METAR files
    - ATSCC files

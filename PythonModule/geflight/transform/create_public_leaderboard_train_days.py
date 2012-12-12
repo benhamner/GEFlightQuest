@@ -1,6 +1,6 @@
 from __future__ import division
 import copy
-import datetime
+from datetime import datetime, timedelta
 import dateutil
 from dateutil import tz
 import os
@@ -11,7 +11,7 @@ def main():
     flight_data_path = os.path.join(os.environ["DataPath"], "GEFlight", "RawPublicLeaderboard")
     output_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 2", "PublicLeaderboardTrainDays")
 
-    start_day = datetime.datetime(2012,11,27,20,00, tzinfo=dateutil.tz.tzutc())
+    start_day = datetime(2012,11,26,20,00, tzinfo=dateutil.tz.tzutc())
     cutoff_times = [start_day]
     for i in range(1,14):
         cutoff_times.append(start_day + timedelta(i, 0))

@@ -23,6 +23,5 @@ def write_csv_with_cutoffs(outfile, first_day, num_days, interval_beginning_hour
 
 
 if __name__ == '__main__':
-	random.seed(487487)
-	write_csv_with_cutoffs("C:\Users\david\Dropbox\GEFlight\Release 1\SampleTestSet\days.csv", parser.parse("11-19-2012"), 7)
-	
+	random.seed(898908)
+	write_csv_with_cutoffs("C:\Users\david\Dropbox\GEFlight\Release 2\PublicLeaderboardDays.csv", parser.parse("11-26-2012"), 14)

@@ -122,7 +122,7 @@ def to_utc_date(myString):
 
 def filter_atscc(filter):
 	print "Performing filtering on atscc files"
-	filter.set_subdir("atscc\\")
+	filter.set_subdir("ATSCC")
 	
 	filter.set_file_in_and_filter_on_date("flightstats_atsccadvisories.csv", "capture_time", date_fields = ["capture_time", "signature_time"])
 	keep_advisory_message_ids =  filter.get_keep_ids("flightstats_atsccadvisories.csv", "capture_time", "advisory_message_id", date_fields = ["capture_time"])
@@ -181,7 +181,7 @@ fields_to_blank_based_on_cutoff = ["end_time", "invalidated_time"])
 
 
 def filter_metar(filter):
-	filter.set_subdir("metar\\")
+	filter.set_subdir("Metar")
 	keep_metar_reports_ids = filter.set_file_in_and_filter_on_date("flightstats_metarreports_combined.csv", "date_time_issued", date_fields = ["date_time_issued"], additional_id_var = "metar_reports_id")
 	filter.filter_on_ids("flightstats_metarpresentconditions_combined.csv", "metar_reports_id", keep_metar_reports_ids)
 	filter.filter_on_ids("flightstats_metarrunwaygroups_combined.csv", "metar_reports_id", keep_metar_reports_ids)
@@ -189,14 +189,14 @@ def filter_metar(filter):
 
 
 def filter_airsigmet(filter):
-	filter.set_subdir("otherweather\\")
+	filter.set_subdir("OtherWeather")
 	filter.set_file_in_and_filter_on_date("flightstats_airsigmet.csv", "timevalidfromutc", date_fields = ["timevalidfromutc", "timevalidtoutc"])
 	keep_airsigmet_ids = filter.get_keep_ids("flightstats_airsigmet.csv", "timevalidfromutc", "airsigmetid", date_fields = ["timevalidfromutc", "timevalidtoutc"])
 	filter.filter_on_ids("flightstats_airsigmetarea.csv", "airsigmetid", keep_airsigmet_ids)
 
 def filter_fb(filter):
 	print "Performing filtering on fb files"
-	filter.set_subdir("otherweather\\")
+	filter.set_subdir("OtherWeather")
 	filter.set_file_in_and_filter_on_date("flightstats_fbwindreport.csv", "createdutc", date_fields = ["createdutc"])
 	keep_fbwindreportid = filter.get_keep_ids("flightstats_fbwindreport.csv", "createdutc", "fbwindreportid", date_fields = ["createdutc"])
 	print len(keep_fbwindreportid)
@@ -210,7 +210,7 @@ def filter_fb(filter):
 
 def filter_taf(filter):
 	print "Performing filtering on taf files"
-	filter.set_subdir("otherweather\\")
+	filter.set_subdir("OtherWeather")
 	keep_tafids = filter.set_file_in_and_filter_on_date("flightstats_taf.csv", "bulletintimeutc", date_fields = ["bulletintimeutc",
 "issuetimeutc",
 "validtimefromutc",

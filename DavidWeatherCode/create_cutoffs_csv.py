@@ -12,6 +12,9 @@ month = 11
 days = range(12,26)
 day = 12
 
+flight_data_path = os.path.join(os.environ["DataPath"], "GEFlight", "RawPublicLeaderboard")
+output_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 2", "PublicLeaderboardTrainDays")
+
 for day in days:
 	day_beginning = parser.parse("2012-" + str(month) + "-" + str(day) + " 01:00:00.00-08")
 	day_end = parser.parse("2012-" + str(month) + "-" + str(day+1) + " 01:00:00.00-08")
@@ -29,4 +32,4 @@ for day in days:
 
 #hours_to_add = random.uniform(0, random_range_num_hours)
 
-import create_sample_test_set
+#import create_sample_test_set

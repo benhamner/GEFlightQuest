@@ -3,7 +3,7 @@ import datetime
 import dateutil
 from dateutil import tz
 from dateutil.parser import parse
-from geflight.transform import flighthistory, utilities
+from geflight.transform import flighthistory, utilities, stitch_files
 import numpy as np
 import os
 
@@ -12,6 +12,9 @@ def training_days_to_test_days(training_days_path, test_days_path, solution_path
         training_day_path = utilities.get_day_path(training_days_path, cutoff_time)
         test_day_path = utilities.get_day_path(test_days_path, cutoff_time)
         training_day_to_test_day(training_day_path, test_day_path, solution_path, cutoff_time)
+
+    stitch_files.stitch_test_set(test_days_path)
+    stitch_files.stitch_solution(solution_path)
 
 def training_day_to_test_day(training_day_path, test_day_path, solution_path, cutoff_time): 
     flighthistory.write_flight_history_test_day_file(

@@ -7,4 +7,4 @@ setup(name='geflight',
       description='GE Flight Quest Scripts',
       author = 'Ben Hamner',
       author_email = 'ben@benhamner.com',
-      packages = ['geflight', 'geflight.transform', 'geflight.summarize'])
+      packages = ['geflight', 'geflight.transform', 'geflight.summarize', 'geflight.benchmark'])

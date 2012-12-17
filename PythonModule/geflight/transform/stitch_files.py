@@ -28,20 +28,18 @@ def get_test_files_list(test_directory):
                 for folder in os.listdir(test_directory)
                 if "." not in folder]
 
-def stitch_solution():
-    solution_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleSolution")
+def stitch_solution(solution_path):
     output_path = os.path.join(solution_path, "solution_combined.csv")
 
     files_list = get_csv_files_list(solution_path)
     stitch_files(files_list, output_path, "flight_history_id")
 
-def stitch_test_set():
-    test_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleTestSet")
+def stitch_test_set(test_path):
     output_path = os.path.join(test_path, "test_flights_combined.csv")
 
     files_list = get_test_files_list(test_path)
     stitch_files(files_list, output_path, "flight_history_id")
 
 if __name__=="__main__":
-    stitch_solution()
-    stitch_test_set()
+    stitch_solution(solution_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleSolution"))
+    stitch_test_set(test_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleTestSet"))

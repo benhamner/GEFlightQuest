@@ -306,6 +306,8 @@ def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes):
     if row["actual_gate_arrival"] == "MISSING":
         return False
     if row["actual_gate_arrival"] < row["actual_runway_arrival"]:
+        return False   
+    if row["actual_runway_departure"] < row["actual_gate_departure"]:
         return False 
     if row["arrival_airport_icao_code"] not in us_icao_codes:
         return False

@@ -16,7 +16,7 @@ def get_scheduled_arrival(row, arrival_type, cutoff_time):
         return row["published_arrival"]
     return cutoff_time 
 
-def get_estimated_arrival_time(row, arrival_type, cutoff_time):
+def get_estimated_arrival(row, arrival_type, cutoff_time):
     if row["estimated_%s_arrival" % arrival_type] != "MISSING":
         return row["estimated_%s_arrival" % arrival_type]
     if row["estimated_%s_arrival" % get_other_arrival_type(arrival_type)] != "MISSING":

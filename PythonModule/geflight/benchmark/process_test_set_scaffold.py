@@ -23,27 +23,32 @@ def get_df_test_days(test_days_path):
         converters={"selected_cutoff_time": parse})
 
 class DayInfo:
-    def __init__(test_day_path, cutoff_time):
+    def __init__(self, test_day_path, cutoff_time):
         self.test_day_path = test_day_path
         self.cutoff_time = cutoff_time
         self.midnight_time = datetime(cutoff_time.year, cutoff_time.month, cutoff_time.day, tzinfo=tzutc())
         self.test_flights_list = get_test_flight_ids(test_day_path)
-        self.test_flights_set = set(test_flights_list)
+        self.test_flights_set = set(self.test_flights_list)
         self.df_flight_history = flighthistory.get_df_flight_history_from_train_format(
             os.path.join(test_day_path, "FlightHistory", "flighthistory.csv"))
-        self.df_flight_history.index = df_flight_history["flight_history_id"]
+        self.df_flight_history.index = self.df_flight_history["flight_history_id"]
         
-        test_flights_index = pd.Index(data = test_flights_list, name="flight_history_id")
-        self.df_test_flights_empty = pd.DataFrame(None, index=test_flights_index)
+        test_flights_index = pd.Index(data=self.test_flights_list,
+            name="flight_history_id")
+        self.df_test_flights_empty = pd.DataFrame(None,
+            index=test_flights_index)
 
         self.df_test_flight_history = self.df_test_flights_empty.join(
             self.df_flight_history)
 
         cutoff_time_list = [cutoff_time for i in range(len(test_flights_index))]
-        self.df_predictions = self.df_test_flights_empty.join(
-            {"actual_runway_arrival": cutoff_time_list,
+        self.df_predictions = self.df_test_flights_empty.join(pd.DataFrame(
+            {"flight_history_id": self.test_flights_list,
+             "actual_runway_arrival": cutoff_time_list,
              "actual_gate_arrival" : cutoff_time_list}, 
-            index = self.test_flights_index)
+            index = test_flights_index,
+            columns = ["flight_history_id", "actual_runway_arrival",
+                       "actual_gate_arrival"]))
 
 def convert_df_predictions_from_datetimes_to_minutes(df_predictions,
     midnight_time):
@@ -76,7 +81,7 @@ def process_test_set(process_day, output_file_name, output_file_path=None,
         print(row["folder_name"])
         day_info = DayInfo(
             os.path.join(test_data_path, row["folder_name"]),
-            row["selected_cutoff_time"]))
+            row["selected_cutoff_time"])
         df_day = process_day(day_info)
         df_day = convert_df_predictions_from_datetimes_to_minutes(df_day,
             day_info.midnight_time)

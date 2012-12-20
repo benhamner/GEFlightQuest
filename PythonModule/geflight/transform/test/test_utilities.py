@@ -265,6 +265,16 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(utilities.parse_datetime_format4("2012-12-12 23:00:03", 0),
                          datetime(2012, 12, 12, 23, 0, 3, tzinfo=tzutc()))
 
+    def test_parse_datetime_format5(self):
+        self.assertEqual(utilities.parse_datetime_format5("2012-11-12 01:00", -8),
+                         datetime(2012, 11, 12, 9, 0, 0, tzinfo=tzutc()))
+        
+        self.assertEqual(utilities.parse_datetime_format5("2012-12-12 23:00", -5),
+                         datetime(2012, 12, 13, 4, 0, 0, tzinfo=tzutc()))
+
+        self.assertEqual(utilities.parse_datetime_format5("2012-12-12 23:00", 0),
+                         datetime(2012, 12, 12, 23, 0, 0, tzinfo=tzutc()))
+
     def test_minutes_difference(self):
         dt1 = datetime(2012, 10, 12, tzinfo=tzutc())
         dt2 = datetime(2012, 10, 12, 1, tzinfo=tzutc())

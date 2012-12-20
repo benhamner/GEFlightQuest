@@ -334,6 +334,26 @@ def parse_datetime_format4(datestr, time_zone_offset_hours):
     dt = dt.astimezone(tzutc())
     return dt
 
+def parse_datetime_format5(datestr, time_zone_offset_hours):
+    """
+    Doing this manually for efficiency
+
+    Format: 2012-11-12 01:00:03
+    Year-Month-Day Hour:Minute:Second
+
+    Converts into UTC
+    """
+    dt = datetime.datetime(int(datestr[:4]),
+                           int(datestr[5:7]),
+                           int(datestr[8:10]),
+                           int(datestr[11:13]),
+                           int(datestr[14:16]),
+                           0,
+                           0,
+                           tzoffset(None, time_zone_offset_hours * 3600))
+    dt = dt.astimezone(tzutc())
+    return dt
+
 def minutes_difference(datetime1, datetime2):
     diff = datetime1 - datetime2
     return diff.days*24*60+diff.seconds/60

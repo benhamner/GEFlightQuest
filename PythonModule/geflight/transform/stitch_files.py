@@ -7,7 +7,7 @@ import os
 
 def combine_dataframes(dataframes_list):
     df = dataframes_list[0]
-    for df_next in dataframes_list:
+    for df_next in dataframes_list[1:]:
         df = df.append(df_next, ignore_index=True)
     return df
 
@@ -41,5 +41,5 @@ def stitch_test_set(test_path):
     stitch_files(files_list, output_path, "flight_history_id")
 
 if __name__=="__main__":
-    stitch_solution(solution_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleSolution"))
-    stitch_test_set(test_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "SampleTestSet"))
+    stitch_solution(solution_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 2", "PublicLeaderboardSolution"))
+    stitch_test_set(test_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 2", "PublicLeaderboardSet"))

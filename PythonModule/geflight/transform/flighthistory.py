@@ -9,6 +9,8 @@ from geflight.transform import utilities
 def to_utc_date(myString):
     if not myString or myString=="MISSING":
         return "MISSING"
+    if myString=="HIDDEN":
+        return "HIDDEN"
     return utilities.parse_datetime_format1(myString).astimezone(tz.tzutc())
 
 def get_flight_history_date_columns():

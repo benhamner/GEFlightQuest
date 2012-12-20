@@ -1,5 +1,5 @@
 from dateutil.parser import parse
-from geflight.transform import flighthistoryevents
+from geflight.transform import flighthistoryevents, utilities as tu
 from geflight.benchmark import utilities as bu
 from geflight.benchmark import process_test_set_scaffold
 import os
@@ -11,7 +11,9 @@ def process_day(day):
     day.df_test_flight_history["estimated_gate_arrival"] = "MISSING"
 
     df_fhe = pd.read_csv(os.path.join(day.test_day_path, "FlightHistory", 
-        "flighthistoryevents.csv"))
+        "flighthistoryevents.csv"), 
+        converters={"date_time_recorded": tu.parse_datetime_format6})
+    df_fhe = df_fhe.sort("date_time_recorded")
 
     for i, row in df_fhe.iterrows():
         f_id = row["flight_history_id"]

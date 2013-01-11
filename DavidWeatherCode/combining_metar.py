@@ -1,7 +1,7 @@
 import pandas
 import os
 
-folder = os.path.join(os.environ["DataPath"], "GEFlight", "RawPublicLeaderboard", "Metar", "flightstats_metar")
+folder = os.path.join(os.environ["DataPath"], "GEFlight", "RawAugmentedTrainingRelease1", "Metar", "flightstats_metar")
 
 def combine_metars(base_name):
 	print base_name

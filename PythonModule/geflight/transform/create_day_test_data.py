@@ -3,7 +3,7 @@ import datetime
 import dateutil
 from dateutil import tz
 from dateutil.parser import parse
-from geflight.transform import flighthistory, utilities, stitch_files
+from geflight.transform import flighthistory, utilities, stitch_files, weather
 import numpy as np
 import os
 
@@ -71,6 +71,16 @@ def training_day_to_test_day(training_day_path, test_day_path, solution_path, cu
         os.path.join(utilities.get_output_subdirectory(test_day_path, "ASDI"), "asdifpwaypoint.csv"),
         "asdiflightplanid",
         flight_plan_ids)
+
+    day_beginning, day_end = utilities.get_day_boundaries(cutoff_time)
+
+    weather.process_one_day(
+        training_day_path, 
+        test_day_path, 
+        day_beginning, 
+        cutoff_time, 
+        "test", 
+        cutoff_time = cutoff_time)
 
 if __name__=="__main__":
     training_days_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "InitialTrainingSet_rev1")

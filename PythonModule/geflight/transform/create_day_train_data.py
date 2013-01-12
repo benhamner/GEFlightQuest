@@ -7,6 +7,7 @@ import os
 
 from geflight.transform import flighthistory
 from geflight.transform import utilities
+from geflight.transform import weather
 
 #def create_day_data(input_path, df_flight_history, output_path, cutoff_time):
 #    flighthistory.get_flight_list_and_write_flight_history(df_flight_history, output_path, cutoff_time)
@@ -61,9 +62,18 @@ def raw_data_to_training_days(raw_data_path, training_days_path, cutoff_times):
     utilities.split_file_based_on_times_filter_on_ids_streaming(os.path.join(raw_data_path, "ASDI", "asdifpwaypoint.csv"), training_days_path,
         "ASDI", "asdifpwaypoint.csv", "asdiflightplanid", days_flight_plan_ids)
 
+    for ct in cutoff_times:
+        print ct
+        day_output_path = os.path.join(output_path, utilities.get_day_str(ct, -9))
+        day_beginning, day_end = utilities.get_day_boundaries(ct, -9)
+
+        if not os.path.exists(day_output_path):
+            os.makedirs(day_output_path)
+        weather.process_one_day(raw_data_path, day_output_path, day_beginning, day_end, "train")
+
 if __name__=="__main__":
     flight_data_path = os.path.join(os.environ["DataPath"], "GEFlight", "RawInitialRelease")
-    output_path = os.path.join(os.environ["DataPath"], "GEFlight", "Release 1", "InitialTrainingSet_rev1")
+    output_path = os.path.join(os.environ["DataPath"], "GEFlight", "Playground", "Train")
 
     cutoff_times =[datetime.datetime(2012,11,cutoff_day,20,00, tzinfo=dateutil.tz.tzutc()) for cutoff_day in range(12,26)]
 

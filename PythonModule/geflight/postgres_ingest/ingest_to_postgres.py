@@ -44,9 +44,9 @@ def main():
                              "InitialTrainingSet_rev1")
 
     for root, dirs, files in os.walk(data_path):
+        if "atscc" in root: continue
         for file_name in files:
-            if not file_name.endswith(".csv"):
-                continue
+            if not file_name.endswith(".csv"): continue
             create_temp_file(root, file_name, temp_file)
             table_name = file_name[:-4]
 

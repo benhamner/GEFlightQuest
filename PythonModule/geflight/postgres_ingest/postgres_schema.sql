@@ -31,88 +31,20 @@ CREATE TABLE asdifpsector (
     ordinal BIGINT,
     sector CHARACTER VARYING);
 
-CREATE TABLE flightstats_atsccadvisories (
-    advisory_message_id BIGINT,
-    capture_time TIMESTAMP WITH TIME ZONE,
-    title CHARACTER VARYING,
-    number BIGINT,
-    signature_time TIMESTAMP WITH TIME ZONE,
-    data CHARACTER VARYING,
-    raw_html CHARACTER VARYING);
+CREATE TABLE asdifpwaypoint (
+    asdiflightplanid BIGINT,
+    ordinal BIGINT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION);
 
-CREATE TABLE flightstats_atsccdeicing (
-    airport_deicing_id BIGINT,
-    capture_time TIMESTAMP WITH TIME ZONE,
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time TIMESTAMP WITH TIME ZONE,
-    invalidated_time CHARACTER VARYING,
-    airport_code CHARACTER VARYING,
-    acceptance_rate CHARACTER VARYING,
-    departure_rate CHARACTER VARYING,
-    original_nas_status_id BIGINT);
-
-CREATE TABLE flightstats_atsccdelay (
-    airport_delay_id BIGINT,
-    capture_time TIMESTAMP WITH TIME ZONE,
-    start_time TIMESTAMP WITH TIME ZONE,
-    end_time CHARACTER VARYING,
-    invalidated_time TIMESTAMP WITH TIME ZONE,
-    airport_code CHARACTER VARYING,
-    type CHARACTER VARYING,
-    min_time BIGINT,
-    max_time BIGINT,
-    trend CHARACTER VARYING,
-    reason CHARACTER VARYING,
-    original_nas_status_id BIGINT);
-
-CREATE TABLE flightstats_atsccgrounddelay (
-    ground_delay_program_id BIGINT,
-    signature_time TIMESTAMP WITH TIME ZONE,
-    effective_start_time TIMESTAMP WITH TIME ZONE,
-    effective_end_time TIMESTAMP WITH TIME ZONE,
-    invalidated_time TIMESTAMP WITH TIME ZONE,
-    cancelled_time CHARACTER VARYING,
-    is_proposed CHARACTER VARYING,
-    airport_code CHARACTER VARYING,
-    delay_assignment_mode CHARACTER VARYING,
-    adl_time TIMESTAMP WITH TIME ZONE,
-    arrivals_estimated_for_start_time TIMESTAMP WITH TIME ZONE,
-    arrivals_estimated_for_end_time TIMESTAMP WITH TIME ZONE,
-    program_rates BIGINT,
-    flights_included CHARACTER VARYING,
-    radius_of_airports_included DOUBLE PRECISION,
-    delay_assignment_table_applies_to CHARACTER VARYING,
-    delay_limit CHARACTER VARYING,
-    maximum_delay BIGINT,
-    average_delay BIGINT,
-    reason CHARACTER VARYING,
-    remarks CHARACTER VARYING,
-    original_advisory_message_id BIGINT,
-    impacting_condition CHARACTER VARYING,
-    comments CHARACTER VARYING);
-
-CREATE TABLE flightstats_atsccgrounddelayairports (
-    ground_delay_program_id BIGINT,
-    airport_code CHARACTER VARYING);
-
-CREATE TABLE flightstats_atsccgrounddelayartccs (
-    ground_delay_program_id BIGINT,
-    artcc_code CHARACTER VARYING);
-
-CREATE TABLE flightstats_atsccinvalidgs (
-    advisory_message_id BIGINT,
-    capture_time TIMESTAMP WITH TIME ZONE,
-    title CHARACTER VARYING,
-    number BIGINT,
-    signature_time TIMESTAMP WITH TIME ZONE,
-    data CHARACTER VARYING,
-    raw_html CHARACTER VARYING,
-    invalid_reason CHARACTER VARYING);
-
-CREATE TABLE flightstats_atsccnasstatus (
-    nas_status_id BIGINT,
-    capture_time TIMESTAMP WITH TIME ZONE,
-    raw_html CHARACTER VARYING);
+CREATE TABLE asdiposition (
+    received TIMESTAMP WITH TIME ZONE,
+    callsign CHARACTER VARYING,
+    altitude BIGINT,
+    groundspeed BIGINT,
+    latitudedegrees DOUBLE PRECISION,
+    longitudedegrees DOUBLE PRECISION,
+    flighthistoryid BIGINT);
 
 CREATE TABLE flighthistory (
     flight_history_id BIGINT,

@@ -34,7 +34,7 @@ def create_temp_file(original_folder, original_file, temp_file):
     f_out.close()
 
 def main():
-    conn = psycopg2.connect("dbname=geflight user=postgres password=sx7%8rBSgB3SPuytB535")
+    conn = psycopg2.connect("dbname=geflight user=postgres password=Postgres1234")
     cur = conn.cursor()
 
     temp_file = "C:\\Users\\Public\\Temp\\temp.csv"

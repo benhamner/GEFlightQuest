@@ -64,7 +64,7 @@ def raw_data_to_training_days(raw_data_path, training_days_path, cutoff_times):
 
     for ct in cutoff_times:
         print ct
-        day_output_path = os.path.join(output_path, utilities.get_day_str(ct, -9))
+        day_output_path = os.path.join(training_days_path, utilities.get_day_str(ct, -9))
         day_beginning, day_end = utilities.get_day_boundaries(ct, -9)
 
         if not os.path.exists(day_output_path):

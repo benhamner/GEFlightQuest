@@ -265,7 +265,7 @@ def get_us_airport_icao_codes(codes_file):
     df = pd.read_csv(codes_file)
     return set(df["icao_code"])
 
-def write_flight_history_test_day_file(input_path, output_path, cutoff_time):
+def write_flight_history_test_day_file(input_path, output_path, cutoff_time):    
     df = get_df_flight_history_from_train_format(input_path)
 
     cols_to_mask = get_flight_history_date_columns_to_hide()
@@ -287,7 +287,7 @@ def write_flight_history_test_day_file(input_path, output_path, cutoff_time):
 
     print("%s, %s: %d rows modified out of %d original lines" % (utilities.get_day_str(cutoff_time), "flighthistory.csv", rows_modified, len(df)))
 
-def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes):
+def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes, diverted_or_redirected_flight_ids):
     """
     This function returns True if the flight is in the air and it
     meets the other requirements to be a test row (continental US flight)
@@ -315,9 +315,29 @@ def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes):
         return False
     if row["departure_airport_icao_code"] not in us_icao_codes:
         return False
+    if row["flight_history_id"] in diverted_or_redirected_flight_ids:
+        return False
     return True
 
+def get_diverted_or_redirected_flights(flight_history_path):
+    base_path, fh_filename = os.path.split(input_path)
+    flight_history_events_path = os.path.join(base_path, "flighthistoryevents.csv")
+    diverted_or_redirected_flight_ids = set()
+    
+    reader = csv.reader(open(flight_history_events_path))
+    reader.next()
+
+    for row in reader:
+        if "STATUS-Diverted" in row[2]:
+            diverted_or_redirected_flight_ids.add(int(row[0]))
+        if "STATUS-Redirected" in row[2]:
+            diverted_or_redirected_flight_ids.add(int(row[0]))
+
+    return diverted_or_redirected_flight_ids
+
 def write_flight_history_test_day_and_solution_test_flights_only(input_path, test_output_path, solution_path, cutoff_time):
+    diverted_or_redirected_flight_ids = get_diverted_or_redirected_flights(input_path)
+
     codes_file = os.path.join(os.environ["DataPath"], "GEFlight", "Reference", "usairporticaocodes.txt")
     us_icao_codes = get_us_airport_icao_codes(codes_file)
     midnight_time = datetime.datetime(cutoff_time.year, cutoff_time.month, cutoff_time.day, tzinfo=tz.tzutc())
@@ -326,7 +346,7 @@ def write_flight_history_test_day_and_solution_test_flights_only(input_path, tes
     
     original_length = len(df)
 
-    df = df.select(lambda i: flight_history_row_in_test_set(df.irow(i), cutoff_time, us_icao_codes))
+    df = df.select(lambda i: flight_history_row_in_test_set(df.irow(i), cutoff_time, us_icao_codes, diverted_or_redirected_flight_ids))
 
     df_test = df[["flight_history_id"
                 , "departure_airport_code"

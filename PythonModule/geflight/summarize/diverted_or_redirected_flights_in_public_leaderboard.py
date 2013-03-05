@@ -3,11 +3,11 @@ import os
 import pandas as pd 
 
 flight_path = os.path.join(os.environ["DataPath"], "GEFlight")
-public_solution_path = os.path.join(flight_path, "Release 2", "PublicLeaderboardSolution", "solution_combined.csv")
-raw_public_leaderboard_flight_history_path = os.path.join(flight_path, "RawPublicLeaderboard", "FlightHistory")
+public_solution_path = os.path.join(flight_path, "Release 6", "FinalEvaluationSolution", "solution_combined.csv")
+raw_public_leaderboard_flight_history_path = os.path.join(flight_path, "RawFinalEvaluationSet", "FlightHistory")
 flight_history_path = os.path.join(raw_public_leaderboard_flight_history_path, "flighthistory.csv")
 flight_history_events_path = os.path.join(raw_public_leaderboard_flight_history_path, "flighthistoryevents.csv")
-redirected_or_diverted_flights_solution_path = os.path.join(flight_path, "Release 4", "redirected_or_diverted_flights_solution.csv")
+redirected_or_diverted_flights_solution_path = os.path.join(flight_path, "Release 6", "redirected_or_diverted_flights_solution.csv")
 
 df_public_solution = pd.read_csv(public_solution_path)
 

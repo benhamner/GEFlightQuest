@@ -320,7 +320,7 @@ def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes, diverted_or_
     return True
 
 def get_diverted_or_redirected_flights(flight_history_path):
-    base_path, fh_filename = os.path.split(input_path)
+    base_path, fh_filename = os.path.split(flight_history_path)
     flight_history_events_path = os.path.join(base_path, "flighthistoryevents.csv")
     diverted_or_redirected_flight_ids = set()
     

@@ -31,7 +31,6 @@ def write_csv_with_cutoffs(outfile, first_day, num_days, interval_beginning_hour
 			print folder_name
 			outdays.write(str(day_beginning) + ", " + str(selected_cutoff_time) + "," + folder_name + "\n")
 
-
 if __name__ == '__main__':
-	random.seed(898908)
-	write_csv_with_cutoffs(os.path.join(os.env["DataPath"], "GEFlight", "Release 2", "PublicLeaderboardDays.csv"), parser.parse("11-26-2012"), 14)
+	random.seed(81245432)
+	write_csv_with_cutoffs(os.path.join(os.environ["DataPath"], "GEFlight", "Release 6", "FinalEvaluationDays.csv"), parser.parse("02-15-2013"), 14)

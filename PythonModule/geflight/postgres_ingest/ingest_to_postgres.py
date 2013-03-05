@@ -40,8 +40,9 @@ def main():
     temp_file = "C:\\Users\\Public\\Temp\\temp.csv"
     data_path = os.path.join(os.environ["DataPath"],
                              "GEFlight",
-                             "Release 1",
-                             "InitialTrainingSet_rev1")
+                             "Release 2",
+                             "PublicLeaderboardTrainDays",
+                             "2012_12_05")
 
     for root, dirs, files in os.walk(data_path):
         if "atscc" in root: continue

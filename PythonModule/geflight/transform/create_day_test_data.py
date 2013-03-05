@@ -27,7 +27,7 @@ def training_day_to_test_day(training_day_path, test_day_path, solution_path, cu
         os.path.join(test_day_path, "test_flights.csv"),
         os.path.join(solution_path, utilities.get_day_str(cutoff_time) + "_solution.csv"),
         cutoff_time)
-    
+
     utilities.filter_file_based_on_cutoff_time_streaming(os.path.join(training_day_path, "FlightHistory", "flighthistoryevents.csv"), 
         os.path.join(utilities.get_output_subdirectory(test_day_path, "FlightHistory"), "flighthistoryevents.csv"),
         "date_time_recorded",

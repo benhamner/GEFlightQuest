@@ -69,10 +69,10 @@ def process_test_set(process_day, output_file_name, output_file_path=None,
 
     if output_file_path is None:
         output_file_path = os.path.join(os.environ["DataPath"], "GEFlight",
-            "BenchmarkSubmissions")
+            "BenchmarkSubmissions-FinalEvaluation")
     if test_data_path is None:
         test_data_path = os.path.join(os.environ["DataPath"],
-            "GEFlight", "Release 2", "PublicLeaderboardSet")
+            "GEFlight", "Release 6", "FinalEvaluationSet")
 
     df_test_days = get_df_test_days(test_data_path)
     df_predictions = []

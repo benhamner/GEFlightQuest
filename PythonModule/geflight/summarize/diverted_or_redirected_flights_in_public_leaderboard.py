@@ -42,7 +42,7 @@ diverted_or_redirected_flight_ids = diverted_flight_ids.union(redirected_flight_
 print("Number diverted or redirected flights: %d" % len(diverted_or_redirected_flight_ids))
 
 bad_flights_in_public_leaderboard = flight_ids_in_public_leaderboard.intersection(diverted_or_redirected_flight_ids)
-print("Number diverted or redirected flights in public leaderboard: %d" % len(bad_flights_in_public_leaderboard))
+print("Number diverted or redirected flights in final evaluation set: %d" % len(bad_flights_in_public_leaderboard))
 print(bad_flights_in_public_leaderboard)
 
 df_bad_flights_solution = df_public_solution[[x in bad_flights_in_public_leaderboard for x in df_public_solution["flight_history_id"]]]

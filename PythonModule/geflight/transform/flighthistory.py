@@ -292,6 +292,7 @@ def flight_history_row_in_test_set(row, cutoff_time, us_icao_codes, diverted_or_
     This function returns True if the flight is in the air and it
     meets the other requirements to be a test row (continental US flight)
     """
+    
     departure_time = get_departure_time(row)
     if departure_time > cutoff_time:
         return False

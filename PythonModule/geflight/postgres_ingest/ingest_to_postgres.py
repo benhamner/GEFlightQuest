@@ -55,6 +55,7 @@ def main():
         if "atscc" in root: continue
         for file_name in files:
             if not file_name.endswith(".csv"): continue
+            print("%s/%s" % (root, file_name))
             create_temp_file(root, file_name, temp_file)
             table_name = file_name[:-4]
 

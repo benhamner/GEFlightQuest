@@ -52,7 +52,7 @@ def main():
     cur = conn.cursor()
  
     for root, dirs, files in os.walk(data_path):
-        if "atscc" in root: continue
+        if "atscc" in root.lower(): continue
         for file_name in files:
             if not file_name.endswith(".csv"): continue
             print("%s/%s" % (root, file_name))

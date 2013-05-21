@@ -34,16 +34,23 @@ def create_temp_file(original_folder, original_file, temp_file):
     f_out.close()
 
 def main():
-    conn = psycopg2.connect("dbname=geflight user=postgres password=Postgres1234")
+    import sys
+    if len(sys.argv)>1:
+        password = sys.argv[1]
+        temp_file = sys.argv[2]
+        data_path = sys.argv[3]
+    else:
+        password = "Postgres1234"
+        temp_file = "C:\\Users\\Public\\Temp\\temp.csv"
+        data_path = os.path.join(os.environ["DataPath"],
+                                 "GEFlight",
+                                 "Release 2",
+                                 "PublicLeaderboardTrainDays",
+                                 "2012_12_05")
+       
+    conn = psycopg2.connect("dbname=geflight user=postgres password=%s" % password)
     cur = conn.cursor()
-
-    temp_file = "C:\\Users\\Public\\Temp\\temp.csv"
-    data_path = os.path.join(os.environ["DataPath"],
-                             "GEFlight",
-                             "Release 2",
-                             "PublicLeaderboardTrainDays",
-                             "2012_12_05")
-
+ 
     for root, dirs, files in os.walk(data_path):
         if "atscc" in root: continue
         for file_name in files:

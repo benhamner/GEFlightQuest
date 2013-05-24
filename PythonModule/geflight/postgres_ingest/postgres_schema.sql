@@ -238,3 +238,6 @@ ALTER TABLE asdiposition
 ADD CONSTRAINT asdipositionflighthistoryfk
 FOREIGN KEY (flighthistoryid)
 REFERENCES flighthistory (flight_history_id);
+
+CREATE INDEX asdiposition_flighthistoryid_idx
+ON asdiposition (flighthistoryid);

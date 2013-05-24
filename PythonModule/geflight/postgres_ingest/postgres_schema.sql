@@ -231,6 +231,10 @@ CREATE TABLE flightstats_tafturbulence (
     minimumaltitudefeet DOUBLE PRECISION,
     maximumaltitudefeet DOUBLE PRECISION);
 
-ALTER TABLE flighthistory ADD PRIMARY KEY (flight_history_id);
+ALTER TABLE flighthistory
+ADD PRIMARY KEY (flight_history_id);
 
-ALTER TABLE asdiposition ADD CONSTRAINT asdipositionflighthistoryfk FOREIGN KEY (flighthistoryid) REFERENCES flighthistory (flight_history_id);
+ALTER TABLE asdiposition
+ADD CONSTRAINT asdipositionflighthistoryfk
+FOREIGN KEY (flighthistoryid)
+REFERENCES flighthistory (flight_history_id);

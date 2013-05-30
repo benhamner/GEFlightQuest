@@ -237,26 +237,11 @@ ADD PRIMARY KEY (flight_history_id);
 ALTER TABLE asdiflightplan
 ADD PRIMARY KEY (asdiflightplanid);
 
-ALTER TABLE asdiflightplan
-ADD CONSTRAINT asdiflightplan_flighthistoryfk
-FOREIGN KEY (flighthistoryid) 
-REFERENCES flighthistory (flight_history_id);
-
 CREATE INDEX asdiflightplan_flighthistory_idx
 ON asdiflightplan (flighthistoryid);
 
-ALTER TABLE asdiairway
-ADD CONSTRAINT asdiairway_asdiflightplan_fk
-FOREIGN KEY (asdiflightplanid) 
-REFERENCES asdiflightplan (asdiflightplanid);
-
 CREATE INDEX asdiairway_asdiflightplan_idx
 ON asdiairway (asdiflightplanid);
-
-ALTER TABLE asdiposition
-ADD CONSTRAINT asdipositionflighthistoryfk
-FOREIGN KEY (flighthistoryid) 
-REFERENCES flighthistory (flight_history_id);
 
 CREATE INDEX asdiposition_flighthistoryid_idx
 ON asdiposition (flighthistoryid);

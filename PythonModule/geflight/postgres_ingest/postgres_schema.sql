@@ -36,7 +36,7 @@ CREATE TABLE flighthistoryevents (
     date_time_recorded TIMESTAMP WITH TIME ZONE,
     event              CHARACTER VARYING,
     data_updated       CHARACTER VARYING);
-CREATE INDEX ON flighthistoryevents (flighthistory_id)
+CREATE INDEX ON flighthistoryevents (flighthistory_id);
 CREATE INDEX ON flighthistoryevents (date_time_recorded);
 
 CREATE TABLE asdiflightplan (

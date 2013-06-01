@@ -62,7 +62,7 @@ def main():
 
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name="flighthistory.csv"]:
+    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
         import_table(root, file_name, temp_file, cur, conn)
 
 if __name__=="__main__":

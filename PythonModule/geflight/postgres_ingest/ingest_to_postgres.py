@@ -38,7 +38,8 @@ def import_table(root, file_name, temp_file, cur, conn):
     create_temp_file(root, file_name, temp_file)
     table_name = file_name[:-4]
 
-    ingest_command = csv_to_postgres.make_postgres_ingest(temp_file, table_name)
+    ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(temp_file, table_name, cur)
+    print(ingest_command)
     cur.execute(ingest_command)
     conn.commit()
 
@@ -63,6 +64,10 @@ def main():
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
+        import_table(root, file_name, temp_file, cur, conn)
+
+    valid_file_names = ["asdiposition.csv"]
+    for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
         import_table(root, file_name, temp_file, cur, conn)
 
 if __name__=="__main__":

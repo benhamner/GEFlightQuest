@@ -1,25 +1,28 @@
 CREATE TABLE asdiairway (
+    id               BIGSERIAL PRIMARY KEY,
     asdiflightplanid BIGINT,
-    ordinal BIGINT,
-    airway CHARACTER VARYING);
+    ordinal          BIGINT,
+    airway           CHARACTER VARYING);
 
 CREATE TABLE asdiflightplan (
-    asdiflightplanid BIGINT,
-    updatetimeutc TIMESTAMP WITH TIME ZONE,
-    flighthistoryid BIGINT,
-    departureairport CHARACTER VARYING,
-    arrivalairport CHARACTER VARYING,
-    aircraftid CHARACTER VARYING,
-    legacyroute CHARACTER VARYING,
-    originaldepartureutc TIMESTAMP WITH TIME ZONE,
+    id                    BIGSERIAL PRIMARY KEY,
+    asdiflightplanid      BIGINT,
+    updatetimeutc         TIMESTAMP WITH TIME ZONE,
+    flighthistoryid       BIGINT,
+    departureairport      CHARACTER VARYING,
+    arrivalairport        CHARACTER VARYING,
+    aircraftid            CHARACTER VARYING,
+    legacyroute           CHARACTER VARYING,
+    originaldepartureutc  TIMESTAMP WITH TIME ZONE,
     estimateddepartureutc TIMESTAMP WITH TIME ZONE,
-    originalarrivalutc TIMESTAMP WITH TIME ZONE,
-    estimatedarrivalutc TIMESTAMP WITH TIME ZONE);
+    originalarrivalutc    TIMESTAMP WITH TIME ZONE,
+    estimatedarrivalutc   TIMESTAMP WITH TIME ZONE);
 
 CREATE TABLE asdifpcenter (
+    id               BIGSERIAL PRIMARY KEY
     asdiflightplanid BIGINT,
-    ordinal BIGINT,
-    center CHARACTER VARYING);
+    ordinal          BIGINT,
+    center           CHARACTER VARYING);
 
 CREATE TABLE asdifpfix (
     asdiflightplanid BIGINT,

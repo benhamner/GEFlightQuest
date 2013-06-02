@@ -97,7 +97,7 @@ CREATE TABLE asdiposition (
     ground_speed      BIGINT,
     latitude_degrees  DOUBLE PRECISION,
     longitude_degrees DOUBLE PRECISION,
-    flighthistory_id  BIGINT REFERENCES flighthistory(id));
+    flighthistory_id  BIGINT NOT NULL REFERENCES flighthistory(id));
 CREATE INDEX ON asdiposition (flighthistory_id);
 CREATE INDEX ON asdiposition (latitude_degrees);
 CREATE INDEX ON asdiposition (longitude_degrees);

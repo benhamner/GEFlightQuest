@@ -66,16 +66,21 @@ def main():
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
         import_table(root, file_name, temp_file, cur, conn)
 
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiflightplan.csv"]:
-        import_table(root, file_name, temp_file, cur, conn)
-
+    # Only keeping relevant tables for space reasons
+    #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiflightplan.csv"]:
+    #    import_table(root, file_name, temp_file, cur, conn)
+    #
+    #valid_file_names = ["flighthistoryevents.csv",
+    #                    "asdiposition.csv",
+    #                    "asdiairway.csv",
+    #                    "asdifpfix.csv",
+    #                    "asdifpwaypoint.csv",
+    #                    "asdifpcenter.csv",
+    #                    "asdifpsector.csv"]
+    
     valid_file_names = ["flighthistoryevents.csv",
-                        "asdiposition.csv",
-                        "asdiairway.csv",
-                        "asdifpfix.csv",
-                        "asdifpwaypoint.csv",
-                        "asdifpcenter.csv",
-                        "asdifpsector.csv"]
+                        "asdiposition.csv"]
+
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
         import_table(root, file_name, temp_file, cur, conn)
 

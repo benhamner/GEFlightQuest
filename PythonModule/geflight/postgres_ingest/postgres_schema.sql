@@ -42,7 +42,7 @@ CREATE INDEX ON flighthistoryevents (date_time_recorded);
 CREATE TABLE asdiflightplan (
     id                      BIGINT PRIMARY KEY,
     update_time_utc         TIMESTAMP WITH TIME ZONE,
-    flighthistory_id        BIGINT REFERENCES flighthistory(id),
+    flighthistory_id        BIGINT NOT NULL REFERENCES flighthistory(id),
     departure_airport       CHARACTER VARYING,
     arrival_airport         CHARACTER VARYING,
     aircraft_id             CHARACTER VARYING,
@@ -55,35 +55,35 @@ CREATE INDEX ON asdiflightplan (flighthistory_id);
 
 CREATE TABLE asdiairway (
     id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT REFERENCES asdiflightplan(id),
+    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
     ordinal           BIGINT,
     airway            CHARACTER VARYING);
 CREATE INDEX ON asdiairway (asdiflightplan_id);
 
 CREATE TABLE asdifpcenter (
     id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT REFERENCES asdiflightplan(id),
+    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
     ordinal           BIGINT,
     center            CHARACTER VARYING);
 CREATE INDEX ON asdifpcenter (asdiflightplan_id);
 
 CREATE TABLE asdifpfix (
     id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT REFERENCES asdiflightplan(id),
+    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
     ordinal           BIGINT,
     fix               CHARACTER VARYING);
 CREATE INDEX ON asdifpfix (asdiflightplan_id);
 
 CREATE TABLE asdifpsector (
     id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT REFERENCES asdiflightplan(id),
+    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
     ordinal           BIGINT,
     sector            CHARACTER VARYING);
 CREATE INDEX ON asdifpsector (asdiflightplan_id);
 
 CREATE TABLE asdifpwaypoint (
     id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT REFERENCES asdiflightplan(id),
+    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
     ordinal           BIGINT,
     latitude          DOUBLE PRECISION,
     longitude         DOUBLE PRECISION);

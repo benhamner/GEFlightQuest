@@ -1,5 +1,5 @@
 CREATE TABLE flightstats_metarpresentconditions_combined (
-    id                BIGINT PRIMARY KEY,
+    id                BIGINT,
     metar_reports_id  BIGINT,
     present_condition CHARACTER VARYING);
 

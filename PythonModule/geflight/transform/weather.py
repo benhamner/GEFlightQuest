@@ -194,17 +194,17 @@ def filter_airsigmet(filter):
 	keep_airsigmet_ids = filter.get_keep_ids("flightstats_airsigmet.csv", "timevalidfromutc", "airsigmetid", date_fields = ["timevalidfromutc", "timevalidtoutc"])
 	filter.filter_on_ids("flightstats_airsigmetarea.csv", "airsigmetid", keep_airsigmet_ids)
 
-def filter_fb(filter):
-	print "Performing filtering on fb files"
+def filter_fd(filter):
+	print "Performing filtering on fd files"
 	filter.set_subdir("OtherWeather")
-	filter.set_file_in_and_filter_on_date("flightstats_fbwindreport.csv", "createdutc", date_fields = ["createdutc"])
-	keep_fbwindreportid = filter.get_keep_ids("flightstats_fbwindreport.csv", "createdutc", "fbwindreportid", date_fields = ["createdutc"])
+	filter.set_file_in_and_filter_on_date("flightstats_fdwindreport.csv", "createdutc", date_fields = ["createdutc"])
+	keep_fbwindreportid = filter.get_keep_ids("flightstats_fdwindreport.csv", "createdutc", "fbwindreportid", date_fields = ["createdutc"])
 	print len(keep_fbwindreportid)
-	keep_fbwindairportids = filter.filter_on_ids("flightstats_fbwindairport.csv", "fbwindreportid", keep_fbwindreportid, additional_id_var = "fbwindairportid")
-	filter.filter_on_ids("flightstats_fbwindaltitude.csv", "fbwindreportid", keep_fbwindreportid)
+	keep_fbwindairportids = filter.filter_on_ids("flightstats_fdwindairport.csv", "fbwindreportid", keep_fbwindreportid, additional_id_var = "fbwindairportid")
+	filter.filter_on_ids("flightstats_fdwindaltitude.csv", "fbwindreportid", keep_fbwindreportid)
 	print keep_fbwindairportids
-	filter.filter_on_ids("flightstats_fbwindairport.csv", "fbwindairportid", keep_fbwindairportids)
-	filter.filter_on_ids("flightstats_fbwind.csv", "fbwindairportid", keep_fbwindairportids)
+	filter.filter_on_ids("flightstats_fdwindairport.csv", "fbwindairportid", keep_fbwindairportids)
+	filter.filter_on_ids("flightstats_fdwind.csv", "fbwindairportid", keep_fbwindairportids)
 
 
 
@@ -231,7 +231,7 @@ def process_one_day(data_in_top, data_out, start_time, end_time, test_or_train, 
 	filter = Filter(data_in_top, data_out, start_time, end_time, test_or_train, cutoff_time = cutoff_time)
 	filter_atscc(filter)
 	filter_airsigmet(filter)
-	filter_fb(filter)
+	filter_fd(filter)
 	filter_metar(filter)
 	filter_taf(filter)
 

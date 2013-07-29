@@ -35,10 +35,10 @@ def create_temp_file(original_folder, original_file, temp_file):
 
 def import_table(root, file_name, temp_file, cur, conn):
     print("%s/%s" % (root, file_name))
-    create_temp_file(root, file_name, temp_file)
+    # create_temp_file(root, file_name, temp_file)
     table_name = file_name[:-4]
 
-    ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(temp_file, table_name, cur)
+    ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(os.path.join(root, file_name), table_name, cur)
     print(ingest_command)
     cur.execute(ingest_command)
     conn.commit()

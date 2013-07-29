@@ -63,8 +63,8 @@ def main():
 
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
-    #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
-    #    import_table(root, file_name, temp_file, cur, conn)
+    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
+        import_table(root, file_name, temp_file, cur, conn)
 
     # Only keeping relevant tables for space reasons
     #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiflightplan.csv"]:
@@ -86,17 +86,19 @@ def main():
     #                    "flightstats_metarrunwaygroups_combined.csv",
     #                    "flightstats_metarskyconditions_combined.csv"]
 
-    valid_file_names = ["flightstats_fbwind.csv",
-                        "flightstats_fbwindairport.csv",
-                        "flightstats_fbwindaltitude.csv",
-                        "flightstats_fbwindreport.csv",
-                        "flightstats_taf.csv",
-                        "flightstats_tafforecast.csv",
-                        "flightstats_taficing.csv",
-                        "flightstats_tafsky.csv",
-                        "flightstats_taftemperature.csv",
-                        "flightstats_tafturbulence.csv"]
-
+    #valid_file_names = ["flightstats_fbwind.csv",
+    #                    "flightstats_fbwindairport.csv",
+    #                    "flightstats_fbwindaltitude.csv",
+    #                    "flightstats_fbwindreport.csv",
+    #                    "flightstats_taf.csv",
+    #                    "flightstats_tafforecast.csv",
+    #                    "flightstats_taficing.csv",
+    #                    "flightstats_tafsky.csv",
+    #                    "flightstats_taftemperature.csv",
+    #                    "flightstats_tafturbulence.csv"]
+    
+    valid_file_names = ["asdiposition.csv"]
+    
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
         import_table(root, file_name, temp_file, cur, conn)
 

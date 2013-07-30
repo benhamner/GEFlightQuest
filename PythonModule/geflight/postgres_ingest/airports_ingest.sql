@@ -1,0 +1,1 @@
+COPY airports FROM 'Airports.csv' DELIMITERS ',' CSV HEADER;

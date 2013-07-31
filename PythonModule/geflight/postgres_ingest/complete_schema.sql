@@ -1,6 +1,12 @@
 CREATE EXTENSION cube;
 CREATE EXTENSION earthdistance;
 
+CREATE TABLE airports (
+    airport_icao_code CHARACTER VARYING PRIMARY KEY,
+    latitude_degrees DOUBLE PRECISION,
+    longitude_degrees DOUBLE PRECISION,
+    altitude_feet DOUBLE PRECISION);
+
 CREATE TABLE flighthistory (
     id                                BIGINT PRIMARY KEY,
     airline_code                      CHARACTER VARYING,
@@ -254,14 +260,6 @@ CREATE TABLE tafturbulence (
     minimumaltitudefeet DOUBLE PRECISION,
     maximumaltitudefeet DOUBLE PRECISION);
 
-CREATE OR REPLACE FUNCTION distance_from_destination(asdiposition)
-  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
-$BODY$
-    SELECT distance_from_airport(fh.arrival_airport_icao_code, $1.latitude_degrees, $1.longitude_degrees)
-    FROM   flighthistory fh
-    WHERE  fh.id = $1.flighthistory_id;
-$BODY$;
-
 CREATE OR REPLACE FUNCTION distance_from_airport(airport_icao_code CHARACTER VARYING, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) 
 RETURNS DOUBLE PRECISION
 AS $$
@@ -273,3 +271,202 @@ UNION ALL
 select 0.0
 WHERE NOT EXISTS (select * from airports where airport_icao_code = $1)
 $$ LANGUAGE 'sql';
+
+CREATE OR REPLACE FUNCTION distance_from_destination(asdiposition)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+    SELECT distance_from_airport(fh.arrival_airport_icao_code, $1.latitude_degrees, $1.longitude_degrees)
+    FROM   flighthistory fh
+    WHERE  fh.id = $1.flighthistory_id;
+$BODY$;
+
+
+CREATE OR REPLACE FUNCTION testFlightIds(cutoffTime TIMESTAMP WITH TIME ZONE)
+    RETURNS TABLE(flighthistory_id BIGINT, last_asdiposition_id BIGINT)
+    AS $$ 
+        WITH flights (id) AS (
+            SELECT id
+            FROM flighthistory fh
+            WHERE actual_runway_departure   IS NOT NULL
+              AND actual_runway_arrival     IS NOT NULL
+              AND scheduled_runway_arrival  IS NOT NULL
+              AND scheduled_gate_arrival    IS NOT NULL
+    		  AND scheduled_gate_departure  IS NOT NULL
+			  AND actual_gate_departure     IS NOT NULL
+              AND actual_runway_departure   < $1
+              AND actual_runway_arrival     > $1)
+        SELECT f.id,
+               max(p.id)
+        FROM flights f
+        LEFT OUTER JOIN asdiposition p ON f.id=p.flighthistory_id
+        WHERE extract(epoch FROM ($1 - p.received))>0
+          AND extract(epoch FROM ($1 - p.received))<120
+          AND p.altitude >= 18000
+        GROUP BY f.id
+        HAVING COUNT(p.id)>0
+    $$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION testFlightInformation(cutoffTime TIMESTAMP WITH TIME ZONE)
+    RETURNS TABLE(flighthistory_id            BIGINT,
+                  departure_airport_icao_code CHARACTER VARYING,
+                  arrival_airport_icao_code   CHARACTER VARYING,
+                  scheduled_runway_arrival    TIMESTAMP WITH TIME ZONE,
+                  scheduled_gate_arrival      TIMESTAMP WITH TIME ZONE,
+		  scheduled_gate_departure    TIMESTAMP WITH TIME ZONE,
+		  actual_gate_departure       TIMESTAMP WITH TIME ZONE,
+                  latitude_degrees            DOUBLE PRECISION,
+                  longitude_degrees           DOUBLE PRECISION,
+                  altitude                    BIGINT,
+                  ground_speed                BIGINT)
+    AS $$
+        SELECT fh.id,
+               departure_airport_icao_code,
+               arrival_airport_icao_code,
+               scheduled_runway_arrival,
+               scheduled_gate_arrival,
+               scheduled_gate_departure,
+               actual_gate_departure,
+               latitude_degrees,
+               longitude_degrees,
+               altitude,
+               ground_speed
+        FROM testFlightIds($1) f
+        INNER JOIN asdiposition p on f.last_asdiposition_id=p.id
+        INNER JOIN flighthistory fh on f.flighthistory_id=fh.id;
+    $$ LANGUAGE SQL;
+
+SELECT * FROM testFlightInformation('2013-01-05 20:00:00+00:00');
+
+CREATE OR REPLACE FUNCTION actuallandingcounts(IN tsbegin timestamp with time zone, IN tsend timestamp with time zone)
+  RETURNS TABLE(airport_code character varying, runway_arrival timestamp with time zone, count bigint) AS
+$BODY$
+select
+	arrival_airport_icao_code as airport_code,
+	actual_runway_arrival as runway_arrival,
+	count(*) as count
+from flighthistory fh
+where
+	fh.arrival_airport_icao_code in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')
+	and fh.actual_runway_arrival > $1
+	and fh.actual_runway_arrival < $2
+	and fh.scheduled_runway_arrival is not null
+	and fh.departure_airport_icao_code 
+	in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')	
+	and fh.actual_runway_departure is not null
+	and fh.scheduled_runway_departure is not null
+	and fh.scheduled_gate_departure is not null
+	and fh.actual_gate_departure is not null
+	and fh.published_arrival is not null
+	and fh.scheduled_gate_arrival is not null
+	and fh.actual_gate_arrival is not null
+	and fh.scheduled_air_time is not null
+	and fh.scheduled_block_time is not null
+	and fh.icao_aircraft_type_actual is not null
+group by
+	fh.actual_runway_arrival,
+	fh.arrival_airport_icao_code
+order by 	
+	fh.actual_runway_arrival
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION actuallandingcounts(timestamp with time zone, timestamp with time zone)
+  OWNER TO postgres;
+
+-- Function: groundconditionsbetween(timestamp with time zone, timestamp with time zone)
+
+-- DROP FUNCTION groundconditionsbetween(timestamp with time zone, timestamp with time zone);
+
+CREATE OR REPLACE FUNCTION groundconditionsbetween(IN tsbegin timestamp with time zone, IN tsend timestamp with time zone)
+  RETURNS TABLE(weather_station_code character varying, date_time_issued timestamp with time zone, dewpoint double precision, wind_speed double precision, visibility double precision, wind_gusts double precision, temperature double precision) AS
+$BODY$
+select
+	weather_station_code,
+	date_time_issued,
+	dewpoint,
+	wind_speed,
+	visibility,
+	COALESCE(wind_gusts::double precision,0) as wind_gusts, 
+	temperature
+from metar_reports fmc
+where
+	fmc.date_time_issued > $1
+	AND fmc.date_time_issued < $2
+	AND fmc.weather_station_code in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')	
+	AND fmc.wind_direction is not null
+	AND fmc.wind_speed is not null
+	AND fmc.visibility is not null
+	AND fmc.temperature is not null
+	AND fmc.dewpoint is not null
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION groundconditionsbetween(timestamp with time zone, timestamp with time zone)
+  OWNER TO postgres;
+
+-- Function: landingsinminutesbetween(character varying, timestamp without time zone, timestamp without time zone)
+
+-- DROP FUNCTION landingsinminutesbetween(character varying, timestamp without time zone, timestamp without time zone);
+
+CREATE OR REPLACE FUNCTION landingsinminutesbetween(airport character varying, tslower timestamp without time zone, tshigher timestamp without time zone)
+  RETURNS bigint AS
+$BODY$
+ SELECT count(*) 
+	FROM public.flighthistory fh2
+	WHERE
+		fh2.arrival_airport_code = $1
+		AND fh2.actual_runway_arrival is NOT NULL
+		AND $2  < fh2.actual_runway_arrival::TIMESTAMP
+		AND $3  > fh2.actual_runway_arrival::TIMESTAMP
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100;
+ALTER FUNCTION landingsinminutesbetween(character varying, timestamp without time zone, timestamp without time zone)
+  OWNER TO postgres;
+
+-- Function: scheduledlandingcounts(timestamp with time zone, timestamp with time zone)
+
+-- DROP FUNCTION scheduledlandingcounts(timestamp with time zone, timestamp with time zone);
+
+CREATE OR REPLACE FUNCTION scheduledlandingcounts(IN tsbegin timestamp with time zone, IN tsend timestamp with time zone)
+  RETURNS TABLE(airport_code character varying, runway_arrival timestamp with time zone, count bigint) AS
+$BODY$
+select
+	arrival_airport_icao_code as airport_code,
+	scheduled_runway_arrival as runway_arrival,
+	count(*) as count
+from flighthistory fh
+where
+	fh.arrival_airport_icao_code in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')
+	and fh.scheduled_runway_arrival > $1
+	and fh.scheduled_runway_arrival < $2
+	and fh.actual_runway_arrival is not null
+	and fh.departure_airport_icao_code 
+	in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')	
+	and fh.actual_runway_departure is not null
+	and fh.scheduled_runway_departure is not null
+	and fh.scheduled_gate_departure is not null
+	and fh.actual_gate_departure is not null
+	and fh.published_arrival is not null
+	and fh.scheduled_gate_arrival is not null
+	and fh.actual_gate_arrival is not null
+	and fh.scheduled_air_time is not null
+	and fh.scheduled_block_time is not null
+	and fh.icao_aircraft_type_actual is not null
+group by
+	fh.scheduled_runway_arrival,
+	fh.arrival_airport_icao_code
+order by 	
+	fh.scheduled_runway_arrival
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION scheduledlandingcounts(timestamp with time zone, timestamp with time zone)
+  OWNER TO postgres;
+
+-- Function: testflightids(timestamp with time zone)
+
+-- DROP FUNCTION testflightids(timestamp with time zone);

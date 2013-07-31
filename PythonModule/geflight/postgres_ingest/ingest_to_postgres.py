@@ -99,7 +99,8 @@ def main():
                         "flightstats_metar_runwaygroups.csv",
                         "flightstats_metar_skyconditions.csv",
                         "flightstats_airsigmet.csv",
-                        "flightstats_airsigmetarea.csv"]
+                        "flightstats_airsigmetarea.csv",
+                        "asdiposition.csv"]
     
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
         import_table(root, file_name, temp_file, cur, conn)

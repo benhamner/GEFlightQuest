@@ -83,23 +83,21 @@ def main():
     #valid_file_names = ["flighthistoryevents.csv",
     #                    "asdiposition.csv"]
     
-    #valid_file_names = ["flightstats_metarpresentconditions_combined.csv",
-    #                    "flightstats_metarreports_combined.csv",
-    #                    "flightstats_metarrunwaygroups_combined.csv",
-    #                    "flightstats_metarskyconditions_combined.csv"]
-
-    #valid_file_names = ["flightstats_fbwind.csv",
-    #                    "flightstats_fbwindairport.csv",
-    #                    "flightstats_fbwindaltitude.csv",
-    #                    "flightstats_fbwindreport.csv",
-    #                    "flightstats_taf.csv",
-    #                    "flightstats_tafforecast.csv",
-    #                    "flightstats_taficing.csv",
-    #                    "flightstats_tafsky.csv",
-    #                    "flightstats_taftemperature.csv",
-    #                    "flightstats_tafturbulence.csv"]
+    valid_file_names = ["flightstats_metarpresentconditions.csv",
+                        "flightstats_metarrunwaygroups.csv",
+                        "flightstats_metarskyconditions.csv",
+                        "flightstats_fdwind.csv",
+                        "flightstats_fdwindairport.csv",
+                        "flightstats_fdwindaltitude.csv",
+                        "flightstats_fdwindreport.csv",
+                        "flightstats_taf.csv",
+                        "flightstats_tafforecast.csv",
+                        "flightstats_taficing.csv",
+                        "flightstats_tafsky.csv",
+                        "flightstats_taftemperature.csv",
+                        "flightstats_tafturbulence.csv"]
     
-    valid_file_names = ["flightstats_metar_reports.csv"]
+    #valid_file_names = ["flightstats_metar_reports.csv"]
     
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
         import_table(root, file_name, temp_file, cur, conn)

@@ -37,6 +37,8 @@ def import_table(root, file_name, temp_file, cur, conn):
     print("%s/%s" % (root, file_name))
     # create_temp_file(root, file_name, temp_file)
     table_name = file_name[:-4]
+    if "flightstats_" in file_name:
+        table_name = table_name[12:]
 
     ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(os.path.join(root, file_name), table_name, cur)
     print(ingest_command)
@@ -63,8 +65,8 @@ def main():
 
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
-        import_table(root, file_name, temp_file, cur, conn)
+    #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
+    #    import_table(root, file_name, temp_file, cur, conn)
 
     # Only keeping relevant tables for space reasons
     #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiflightplan.csv"]:

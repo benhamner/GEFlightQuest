@@ -65,43 +65,30 @@ def main():
 
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
-    #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
-    #    import_table(root, file_name, temp_file, cur, conn)
+    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
+        import_table(root, file_name, temp_file, cur, conn)
 
-    # Only keeping relevant tables for space reasons
-    #for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiflightplan.csv"]:
-    #    import_table(root, file_name, temp_file, cur, conn)
-    #
-    #valid_file_names = ["flighthistoryevents.csv",
-    #                    "asdiposition.csv",
-    #                    "asdiairway.csv",
-    #                    "asdifpfix.csv",
-    #                    "asdifpwaypoint.csv",
-    #                    "asdifpcenter.csv",
-    #                    "asdifpsector.csv"]
-    
-    #valid_file_names = ["flighthistoryevents.csv",
-    #                    "asdiposition.csv"]
-    
-    #valid_file_names = ["flightstats_metar_reports.csv",
-    #                    "flightstats_fdwind.csv",
-    #                    "flightstats_fdwindairport.csv",
-    #                    "flightstats_fdwindaltitude.csv",
-    #                    "flightstats_fdwindreport.csv",
-    #                    "flightstats_taf.csv",
-    #                    "flightstats_tafforecast.csv",
-    #                    "flightstats_taficing.csv",
-    #                    "flightstats_tafsky.csv",
-    #                    "flightstats_taftemperature.csv",
-    #                    "flightstats_tafturbulence.csv"]
-    
-    valid_file_names = ["flightstats_metar_presentconditions.csv",
+    valid_file_names = ["flightstats_metar_reports.csv",
+                        "flightstats_fdwind.csv",
+                        "flightstats_fdwindairport.csv",
+                        "flightstats_fdwindaltitude.csv",
+                        "flightstats_fdwindreport.csv",
+                        "flightstats_taf.csv",
+                        "flightstats_tafforecast.csv",
+                        "flightstats_taficing.csv",
+                        "flightstats_tafsky.csv",
+                        "flightstats_taftemperature.csv",
+                        "flightstats_tafturbulence.csv",
+                        "flightstats_metar_presentconditions.csv",
                         "flightstats_metar_runwaygroups.csv",
                         "flightstats_metar_skyconditions.csv",
                         "flightstats_airsigmet.csv",
                         "flightstats_airsigmetarea.csv"]
     
     for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
+        import_table(root, file_name, temp_file, cur, conn)
+
+    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiposition.csv"]:
         import_table(root, file_name, temp_file, cur, conn)
 
 if __name__=="__main__":

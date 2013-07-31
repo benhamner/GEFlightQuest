@@ -1,3 +1,6 @@
+CREATE EXTENSION cube;
+CREATE EXTENSION earthdistance;
+
 CREATE TABLE flighthistory (
     id                                BIGINT PRIMARY KEY,
     airline_code                      CHARACTER VARYING,
@@ -250,3 +253,23 @@ CREATE TABLE tafturbulence (
     intensity DOUBLE PRECISION,
     minimumaltitudefeet DOUBLE PRECISION,
     maximumaltitudefeet DOUBLE PRECISION);
+
+CREATE OR REPLACE FUNCTION distance_from_destination(asdiposition)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+    SELECT distance_from_airport(fh.arrival_airport_icao_code, $1.latitude_degrees, $1.longitude_degrees)
+    FROM   flighthistory fh
+    WHERE  fh.id = $1.flighthistory_id;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION distance_from_airport(airport_icao_code CHARACTER VARYING, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION) 
+RETURNS DOUBLE PRECISION
+AS $$
+select
+    earth_distance(ll_to_earth(latitude_degrees, longitude_degrees), ll_to_earth($2, $3)) / 1609.344
+from airports
+WHERE airport_icao_code = $1
+UNION ALL
+select 0.0
+WHERE NOT EXISTS (select * from airports where airport_icao_code = $1)
+$$ LANGUAGE 'sql';

@@ -141,7 +141,7 @@ CREATE TABLE metar_runwaygroups (
 
 CREATE TABLE metar_skyconditions (
     id BIGINT,
-    metar_reports_id BIGINT PRIMARY KEY,
+    metar_reports_id BIGINT,
     sky_condition CHARACTER VARYING);
 
 CREATE TABLE airsigmet (
@@ -158,25 +158,25 @@ CREATE TABLE airsigmet (
     rawtext CHARACTER VARYING);
 
 CREATE TABLE airsigmetarea (
-    airsigmetid BIGINT PRIMARY KEY,
+    airsigmetid BIGINT,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     ordinal BIGINT);
 
-CREATE TABLE fbwind (
-    fbwindairportid BIGINT PRIMARY KEY,
+CREATE TABLE fdwind (
+    fbwindairportid BIGINT,
     ordinal BIGINT,
     bearing BIGINT,
     knots BIGINT,
     temperature CHARACTER VARYING);
 
 CREATE TABLE fdwindairport (
-    fbwindairportid BIGINT PRIMARY KEY,
+    fbwindairportid BIGINT,
     fbwindreportid BIGINT,
     airportcode CHARACTER VARYING);
 
 CREATE TABLE fdwindaltitude (
-    fbwindreportid BIGINT PRIMARY KEY,
+    fbwindreportid BIGINT,
     ordinal BIGINT,
     altitude BIGINT);
 
@@ -230,26 +230,26 @@ CREATE TABLE tafforecast (
     notdecoded CHARACTER VARYING);
 
 CREATE TABLE taficing (
-    tafforecastid BIGINT PRIMARY KEY,
+    tafforecastid BIGINT,
     intensity DOUBLE PRECISION,
     minimumaltitudefeet DOUBLE PRECISION,
     maximumaltitudefeet DOUBLE PRECISION);
 
 CREATE TABLE tafsky (
-    tafforecastid BIGINT PRIMARY KEY,
+    tafforecastid BIGINT,
     cloudbasefeet DOUBLE PRECISION,
     cloudtype CHARACTER VARYING,
     cloudcover CHARACTER VARYING);
 
 CREATE TABLE taftemperature (
-    tafforecastid BIGINT PRIMARY KEY,
+    tafforecastid BIGINT,
     validtimeutc TIMESTAMP WITH TIME ZONE,
     mintemperaturecelcius DOUBLE PRECISION,
     maxtemperaturecelcius DOUBLE PRECISION,
     surfacetemperaturecelcius DOUBLE PRECISION);
 
 CREATE TABLE tafturbulence (
-    tafforecastid BIGINT PRIMARY KEY,
+    tafforecastid BIGINT,
     intensity DOUBLE PRECISION,
     minimumaltitudefeet DOUBLE PRECISION,
     maximumaltitudefeet DOUBLE PRECISION);

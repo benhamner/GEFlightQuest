@@ -108,8 +108,8 @@ CREATE TABLE metar_presentconditions (
     metar_reports_id  BIGINT,
     present_condition CHARACTER VARYING);
 
-CREATE TABLE metarreports (
-    id                   BIGINT PRIMAY KEY,
+CREATE TABLE metar_reports (
+    id                   BIGINT PRIMARY KEY,
     weather_station_code CHARACTER VARYING,
     date_time_issued     TIMESTAMP WITH TIME ZONE,
     report_modifier      CHARACTER VARYING,

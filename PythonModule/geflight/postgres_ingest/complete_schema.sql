@@ -110,7 +110,7 @@ CREATE TABLE asdiposition (
 CREATE INDEX ON asdiposition (flighthistory_id);
 
 CREATE TABLE metar_presentconditions (
-    id                BIGINT PRIMARY KEY,
+    id                BIGINT,
     metar_reports_id  BIGINT,
     present_condition CHARACTER VARYING);
 

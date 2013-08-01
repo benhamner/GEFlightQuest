@@ -4,6 +4,8 @@ from itertools import islice
 import psycopg2
 import os
 
+line_buffer_size = 100000
+
 class CsvDialect(csv.Dialect):
     def __init__(self):
         self.delimiter = ','
@@ -33,7 +35,7 @@ def import_table(root, file_name, temp_file, cur, conn):
     i = 0
     
     while True:
-        next_lines = list(islice(f, 100000))
+        next_lines = list(islice(f, line_buffer_size))
         if not next_lines:
             break
         write_temp_file(temp_file, header, next_lines)
@@ -41,7 +43,7 @@ def import_table(root, file_name, temp_file, cur, conn):
         ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(temp_file, table_name, cur)
         if i==1:
             print(ingest_command)
-        print("%s: %d lines processed" % (table_name, (i-1)*100000+len(next_lines)))
+        print("%s: %d lines processed" % (table_name, (i-1)*line_buffer_size+len(next_lines)))
         cur.execute(ingest_command)
         conn.commit()
 
@@ -65,31 +67,28 @@ def main():
 
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="flighthistory.csv"]:
-        import_table(root, file_name, temp_file, cur, conn)
-
-    valid_file_names = ["flightstats_metar_reports.csv",
-                        "flightstats_fdwind.csv",
-                        "flightstats_fdwindairport.csv",
-                        "flightstats_fdwindaltitude.csv",
-                        "flightstats_fdwindreport.csv",
-                        "flightstats_taf.csv",
-                        "flightstats_tafforecast.csv",
-                        "flightstats_taficing.csv",
-                        "flightstats_tafsky.csv",
-                        "flightstats_taftemperature.csv",
-                        "flightstats_tafturbulence.csv",
-                        "flightstats_metar_presentconditions.csv",
-                        "flightstats_metar_runwaygroups.csv",
-                        "flightstats_metar_skyconditions.csv",
-                        "flightstats_airsigmet.csv",
-                        "flightstats_airsigmetarea.csv"]
-    
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
-        import_table(root, file_name, temp_file, cur, conn)
-
-    for root, file_name in [(root, file_name) for root, file_name in paths if file_name=="asdiposition.csv"]:
-        import_table(root, file_name, temp_file, cur, conn)
+    import_groups = [ ["flighthistory.csv"],
+                      ["flightstats_metar_reports.csv",
+                       "flightstats_fdwind.csv",
+                       "flightstats_fdwindairport.csv",
+                       "flightstats_fdwindaltitude.csv",
+                       "flightstats_fdwindreport.csv",
+                       "flightstats_taf.csv",
+                       "flightstats_tafforecast.csv",
+                       "flightstats_taficing.csv",
+                       "flightstats_tafsky.csv",
+                       "flightstats_taftemperature.csv",
+                       "flightstats_tafturbulence.csv",
+                       "flightstats_metar_presentconditions.csv",
+                       "flightstats_metar_runwaygroups.csv",
+                       "flightstats_metar_skyconditions.csv",
+                       "flightstats_airsigmet.csv",
+                       "flightstats_airsigmetarea.csv"],
+                      ["asdiposition.csv"]]
+ 
+    for valid_file_names in import_groups:
+        for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:
+            import_table(root, file_name, temp_file, cur, conn)
 
 if __name__=="__main__":
     main()

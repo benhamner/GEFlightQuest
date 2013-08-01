@@ -115,24 +115,24 @@ CREATE TABLE metar_presentconditions (
     present_condition CHARACTER VARYING);
 
 CREATE TABLE metar_reports (
-    id                   BIGINT PRIMARY KEY,
-    weather_station_code CHARACTER VARYING,
-    date_time_issued     TIMESTAMP WITH TIME ZONE,
-    report_modifier      CHARACTER VARYING,
-    is_wind_direction_variable CHARACTER VARYING,
-    wind_direction DOUBLE PRECISION,
-    wind_speed DOUBLE PRECISION,
-    wind_gusts DOUBLE PRECISION,
-    variable_wind_direction CHARACTER VARYING,
-    is_visibility_less_than CHARACTER VARYING,
-    visibility DOUBLE PRECISION,
-    temperature DOUBLE PRECISION,
-    dewpoint DOUBLE PRECISION,
     altimeter DOUBLE PRECISION,
-    remark CHARACTER VARYING,
+    date_time_issued     TIMESTAMP WITH TIME ZONE,
+    dewpoint DOUBLE PRECISION,
+    is_visibility_less_than CHARACTER VARYING,
+    is_wind_direction_variable CHARACTER VARYING,
+    id                   BIGINT PRIMARY KEY,
     original_report CHARACTER VARYING,
+    remark CHARACTER VARYING,
+    report_modifier      CHARACTER VARYING,
+    sea_level_pressure DOUBLE PRECISION,
     station_type CHARACTER VARYING,
-    sea_level_pressure DOUBLE PRECISION);
+    temperature DOUBLE PRECISION,
+    variable_wind_direction CHARACTER VARYING,
+    visibility DOUBLE PRECISION,
+    weather_station_code CHARACTER VARYING,
+    wind_direction DOUBLE PRECISION,
+    wind_gusts DOUBLE PRECISION,
+    wind_speed DOUBLE PRECISION);
 
 CREATE TABLE metar_runwaygroups (
     approach_direction CHARACTER VARYING,

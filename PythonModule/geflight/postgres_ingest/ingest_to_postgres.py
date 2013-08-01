@@ -1,5 +1,6 @@
 import csv
 from csvjazz import csv_to_postgres
+from itertools import islice
 import psycopg2
 import os
 
@@ -14,36 +15,35 @@ class CsvDialect(csv.Dialect):
         self.skipinitialspace = False
         self.strict = False
 
-def replace_missing(row):
-    for i, el in enumerate(row):
-        if el=="MISSING":
-            row[i]=""
-
-def create_temp_file(original_folder, original_file, temp_file):
-    converters = {"flighthistory.csv": replace_missing}
-
-    reader = csv.reader(open(os.path.join(original_folder, original_file)))
-    f_out = open(temp_file, "w")
-    writer = csv.writer(f_out, dialect=CsvDialect())
-    writer.writerow(reader.next())
-
-    for row in reader:
-        if original_file in converters:
-            converters[original_file](row)
-        writer.writerow(row)
-    f_out.close()
+def write_temp_file(temp_file, header, lines):
+    f = open(temp_file, "w")
+    f.write(header)
+    f.writelines(lines)
+    f.close()
 
 def import_table(root, file_name, temp_file, cur, conn):
     print("%s/%s" % (root, file_name))
-    # create_temp_file(root, file_name, temp_file)
+
     table_name = file_name[:-4]
     if "flightstats_" in file_name:
         table_name = table_name[12:]
-
-    ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(os.path.join(root, file_name), table_name, cur)
-    print(ingest_command)
-    cur.execute(ingest_command)
-    conn.commit()
+    
+    f = open(os.path.join(root, file_name))
+    header = f.readline()
+    i = 0
+    
+    while True:
+        next_lines = list(islice(f, 100000))
+        if not next_lines:
+            break
+        write_temp_file(temp_file, header, next_lines)
+        i += 1
+        ingest_command = csv_to_postgres.make_postgres_ingest_with_defaults(temp_file, table_name, cur)
+        if i==1:
+            print(ingest_command)
+        print("%s: %d lines processed" % (table_name, (i-1)*100000+len(next_lines)))
+        cur.execute(ingest_command)
+        conn.commit()
 
 def main():
     import sys

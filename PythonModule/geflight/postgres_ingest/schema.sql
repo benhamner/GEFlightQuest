@@ -56,7 +56,7 @@ CREATE TABLE flighthistory (
     departure_date_date_only          TIMESTAMP WITH TIME ZONE,
     arrival_date_date_only            TIMESTAMP WITH TIME ZONE,
     last_updated                      TIMESTAMP WITH TIME ZONE,
-    icao_aircraft_type_actual         CHARACTER VARYING)
+    icao_aircraft_type_actual         CHARACTER VARYING);
 
 CREATE TABLE flighthistory_release (
     id                                BIGINT NOT NULL,

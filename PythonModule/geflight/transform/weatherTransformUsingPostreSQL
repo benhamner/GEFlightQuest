@@ -1,0 +1,125 @@
+-- ===============================================================
+-- WeatherTransform
+-- Filters FlightStats weather data for creating the TRAINING set
+--    * Keeps dates from (start 09:00:00+00 <= date < end+1day 09:00:00+00)
+-- Weather tables: AIRSIGMET, FDWIND, METAR, TAF
+-- @Author: Joyce & David
+-- Created: 1-Aug-2013
+-- ===============================================================
+
+-- ===============================================================
+-- METAR
+-- 1. Filter metar_reports for training period dates. Need ids
+-- 2. Use metar_reports_id to filter in order:
+--      * presentconditions, skyconditions, runwayconditions
+-- ===============================================================
+-- metar_reports: create view with training date constraints
+create or replace view training1_metar_reports as ( 
+    select * from metar_reports where
+    date_time_issued >= '2013-06-07 09:00:00+00' and date_time_issued < '2013-07-05 09:00:00+00'
+);
+
+-- presentconditions
+create or replace view training1_metar_presentconditions as (
+    select * from metar_presentconditions
+    where metar_reports_id in (select id from training1_metar_reports)
+);
+-- skyconditions
+create or replace view training1_metar_skyconditions as (
+    select * from metar_skyconditions
+    where metar_reports_id in (select id from training1_metar_reports)
+);
+
+-- runwayconditions
+create or replace view training1_metar_runwaygroups as (
+    select * from metar_runwaygroups
+    where metar_reports_id in (select id from training1_metar_reports)
+);
+
+
+-- ===============================================================
+-- FDWIND
+-- 1. Filter fdwindreport for training period dates. Need ids
+-- 2. Use fbwindreportid to filter in order:
+--     * fdwindairport, Need ids
+--     * fdwindaltitude
+-- 3. Use fbwindairportid to filter fdwind
+-- 4. Note: Tables are called FDwind, ids are called FBwind.
+--          This is because NOAA has changed the name of their product
+--          to FDwind but did not change column headers
+-- ===============================================================
+create or replace view training1_fdwindreport as (
+    select * from fdwindreport where
+    createdutc >= '2013-06-07 09:00:00' and createdutc < '2013-07-05 09:00:00'
+);
+-- airport using report ids
+create or replace view training1_fdwindairport as (
+    select * from fdwindairport where fbwindreportid in 
+        (select fbwindreportid from training1_fdwindreport)
+);
+
+-- altitude uses report ids
+create or replace view training1_fdwindaltitude as (
+    select * from fdwindaltitude where fbwindreportid in 
+        (select fbwindreportid from training1_fdwindreport)
+);
+-- wind using airport ids
+create or replace view training1_fdwind as (
+    select * from fdwind where fbwindairportid in
+        (SELECT fbwindairportid from training1_fdwindairport)
+);
+
+
+-- ===============================================================
+-- TAF
+-- 1. Filter taf for training period dates, Need ids
+-- 2. Use tafid to filter in order:
+--    * taf forecast, icing, sky, temp, turbulence
+-- ===============================================================
+create or replace view training1_taf as (
+    select * from taf where 
+    bulletintimeutc >= '2013-06-07 09:00:00' and bulletintimeutc < '2013-07-05 09:00:00'
+);
+-- taf forecast on taf ids
+create or replace view training1_tafforecast as (
+    select * from tafforecast where tafid in
+        (select tafid from training1_taf)
+);
+-- taf icing, sky, temp, turbulence on tafforecastid
+create or replace view training1_taficing as (
+    select * from taficing where tafforecastid in
+        (select tafforecastid from training1_tafforecast)
+);
+create or replace view training1_tafsky as (
+    select * from tafsky where tafforecastid in
+        (select tafforecastid from training1_tafforecast)
+);
+create or replace view training1_taftemperature as (
+    select * from taftemperature where tafforecastid in
+        (select tafforecastid from training1_tafforecast)
+);
+create or replace view training1_tafturbulence as (
+    select * from tafturbulence where tafforecastid in
+        (select tafforecastid from training1_tafforecast)
+);
+
+-- ===============================================================
+-- AIRSIGMET
+-- 1. Filter airsigmet on training dates, Need ids
+-- 2. Filter airsigmetarea using airsigmet ids
+-- ===============================================================
+create or replace view training1_airsigmet as (
+    select * from airsigmet where
+    timevalidfromutc >= '2013-06-07 09:00:00' 
+    and timevalidfromutc < '2013-07-05 09:00:00'
+);
+-- airsigmetarea
+create or replace view training1_airsigmetarea as (
+    select * from airsigmetarea where 
+    airsigmetid in (select airsigmetid from training1_airsigmet)
+);
+
+
+
+-- ===============================================================
+-- Export all views to csv

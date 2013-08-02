@@ -8,7 +8,7 @@ CREATE TABLE airports (
     altitude_feet DOUBLE PRECISION);
 
 CREATE TABLE flighthistory (
-    id                                BIGINT PRIMARY KEY,
+    id                                BIGINT NOT NULL,
     airline_code                      CHARACTER VARYING,
     airline_icao_code                 CHARACTER VARYING,
     flight_number                     BIGINT,
@@ -34,24 +34,18 @@ CREATE TABLE flighthistory (
     scheduled_aircraft_type           CHARACTER VARYING,
     actual_aircraft_type              CHARACTER VARYING,
     icao_aircraft_type_actual         CHARACTER VARYING);
-CREATE INDEX ON flighthistory (departure_airport_icao_code);
-CREATE INDEX ON flighthistory (arrival_airport_icao_code);
-CREATE INDEX ON flighthistory (actual_runway_departure);
-CREATE INDEX ON flighthistory (actual_runway_arrival);
 
 CREATE TABLE flighthistoryevents (
-    id                 BIGSERIAL PRIMARY KEY,
-    flighthistory_id   BIGINT REFERENCES flighthistory(id),
+    id                 BIGSERIAL,
+    flighthistory_id   BIGINT NOT NULL,
     date_time_recorded TIMESTAMP WITH TIME ZONE,
     event              CHARACTER VARYING,
     data_updated       CHARACTER VARYING);
-CREATE INDEX ON flighthistoryevents (flighthistory_id);
-CREATE INDEX ON flighthistoryevents (date_time_recorded);
 
 CREATE TABLE asdiflightplan (
-    id                      BIGINT PRIMARY KEY,
+    id                      BIGINT,
     update_time_utc         TIMESTAMP WITH TIME ZONE,
-    flighthistory_id        BIGINT NOT NULL REFERENCES flighthistory(id),
+    flighthistory_id        BIGINT NOT NULL,
     departure_airport       CHARACTER VARYING,
     arrival_airport         CHARACTER VARYING,
     aircraft_id             CHARACTER VARYING,
@@ -60,7 +54,6 @@ CREATE TABLE asdiflightplan (
     estimated_departure_utc TIMESTAMP WITH TIME ZONE,
     original_arrival_utc    TIMESTAMP WITH TIME ZONE,
     estimated_arrival_utc   TIMESTAMP WITH TIME ZONE);
-CREATE INDEX ON asdiflightplan (flighthistory_id);
 
 CREATE TABLE asdiairway (
     id                BIGSERIAL PRIMARY KEY,
@@ -99,15 +92,14 @@ CREATE TABLE asdifpwaypoint (
 CREATE INDEX ON asdifpwaypoint (asdiflightplan_id);
 
 CREATE TABLE asdiposition (
-    id                BIGSERIAL PRIMARY KEY,
+    id                BIGSERIAL,
     received          TIMESTAMP WITH TIME ZONE,
     callsign          CHARACTER VARYING,
     altitude          BIGINT,
     ground_speed      BIGINT,
     latitude_degrees  DOUBLE PRECISION,
     longitude_degrees DOUBLE PRECISION,
-    flighthistory_id  BIGINT NOT NULL REFERENCES flighthistory(id));
-CREATE INDEX ON asdiposition (flighthistory_id);
+    flighthistory_id  BIGINT NOT NULL;
 
 CREATE TABLE metar_presentconditions (
     id                BIGINT,
@@ -120,7 +112,7 @@ CREATE TABLE metar_reports (
     dewpoint DOUBLE PRECISION,
     is_visibility_less_than CHARACTER VARYING,
     is_wind_direction_variable CHARACTER VARYING,
-    id                   BIGINT PRIMARY KEY,
+    id                   BIGINT,
     original_report CHARACTER VARYING,
     remark CHARACTER VARYING,
     report_modifier      CHARACTER VARYING,

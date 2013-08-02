@@ -11,7 +11,7 @@ CREATE TABLE flighthistory (
     id                                BIGINT NOT NULL,
     airline_code                      CHARACTER VARYING,
     airline_icao_code                 CHARACTER VARYING,
-    flight_number                     BIGINT,
+    flight_number                     CHARACTER VARYING,
     tail_number                       CHARACTER VARYING,
     departure_airport_code            CHARACTER VARYING,
     departure_airport_icao_code       CHARACTER VARYING,

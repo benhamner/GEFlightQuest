@@ -43,7 +43,7 @@ CREATE TABLE flighthistoryevents (
     data_updated       CHARACTER VARYING);
 
 CREATE TABLE asdiflightplan (
-    id                      BIGINT,
+    id                      BIGINT NOT NULL,
     update_time_utc         TIMESTAMP WITH TIME ZONE,
     flighthistory_id        BIGINT NOT NULL,
     departure_airport       CHARACTER VARYING,
@@ -56,40 +56,35 @@ CREATE TABLE asdiflightplan (
     estimated_arrival_utc   TIMESTAMP WITH TIME ZONE);
 
 CREATE TABLE asdiairway (
-    id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
+    id                BIGSERIAL,
+    asdiflightplan_id BIGINT NOT NULL,
     ordinal           BIGINT,
     airway            CHARACTER VARYING);
-CREATE INDEX ON asdiairway (asdiflightplan_id);
 
 CREATE TABLE asdifpcenter (
-    id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
+    id                BIGSERIAL,
+    asdiflightplan_id BIGINT NOT NULL,
     ordinal           BIGINT,
     center            CHARACTER VARYING);
-CREATE INDEX ON asdifpcenter (asdiflightplan_id);
 
 CREATE TABLE asdifpfix (
-    id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
+    id                BIGSERIAL,
+    asdiflightplan_id BIGINT NOT NULL,
     ordinal           BIGINT,
     fix               CHARACTER VARYING);
-CREATE INDEX ON asdifpfix (asdiflightplan_id);
 
 CREATE TABLE asdifpsector (
-    id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
+    id                BIGSERIAL,
+    asdiflightplan_id BIGINT NOT NULL,
     ordinal           BIGINT,
     sector            CHARACTER VARYING);
-CREATE INDEX ON asdifpsector (asdiflightplan_id);
 
 CREATE TABLE asdifpwaypoint (
-    id                BIGSERIAL PRIMARY KEY,
-    asdiflightplan_id BIGINT NOT NULL REFERENCES asdiflightplan(id),
+    id                BIGSERIAL,
+    asdiflightplan_id BIGINT,
     ordinal           BIGINT,
     latitude          DOUBLE PRECISION,
     longitude         DOUBLE PRECISION);
-CREATE INDEX ON asdifpwaypoint (asdiflightplan_id);
 
 CREATE TABLE asdiposition (
     id                BIGSERIAL,
@@ -143,7 +138,7 @@ CREATE TABLE metar_skyconditions (
     sky_condition CHARACTER VARYING);
 
 CREATE TABLE airsigmet (
-    airsigmetid BIGINT PRIMARY KEY,
+    airsigmetid BIGINT NOT NULL,
     timevalidfromutc TIMESTAMP WITH TIME ZONE,
     timevalidtoutc TIMESTAMP WITH TIME ZONE,
     movementdirdegrees CHARACTER VARYING,
@@ -156,7 +151,7 @@ CREATE TABLE airsigmet (
     rawtext CHARACTER VARYING);
 
 CREATE TABLE airsigmetarea (
-    airsigmetid BIGINT,
+    airsigmetid BIGINT NOT NULL,
     latitude DOUBLE PRECISION,
     longitude DOUBLE PRECISION,
     ordinal BIGINT);
@@ -174,12 +169,12 @@ CREATE TABLE fdwindairport (
     airportcode CHARACTER VARYING);
 
 CREATE TABLE fdwindaltitude (
-    fbwindreportid BIGINT,
+    fbwindreportid BIGINT NOT NULL,
     ordinal BIGINT,
     altitude BIGINT);
 
 CREATE TABLE fdwindreport (
-    fbwindreportid BIGINT PRIMARY KEY,
+    fbwindreportid BIGINT NOT NULL,
     createdutc TIMESTAMP WITH TIME ZONE,
     reporttype1 CHARACTER VARYING,
     reporttype2 CHARACTER VARYING,

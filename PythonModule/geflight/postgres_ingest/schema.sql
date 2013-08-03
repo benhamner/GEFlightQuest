@@ -145,7 +145,7 @@ CREATE TABLE asdiposition (
     ground_speed      BIGINT,
     latitude_degrees  DOUBLE PRECISION,
     longitude_degrees DOUBLE PRECISION,
-    flighthistory_id  BIGINT NOT NULL);
+    flighthistory_id  BIGINT);
 
 CREATE TABLE metar_presentconditions (
     id                BIGINT,

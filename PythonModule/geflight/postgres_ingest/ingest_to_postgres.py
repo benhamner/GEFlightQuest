@@ -68,7 +68,8 @@ def main():
     paths = [(root, file_name) for root, dirs, files in os.walk(data_path) for file_name in files]
 
     import_groups = [ ["flightstats_flighthistory.csv"],
-                      ["flightstats_taf.csv",
+                      ["flightstats_flighthistoryevents.csv",
+                       "flightstats_taf.csv",
                        "flightstats_airsigmet.csv",
                        "flightstats_fdwind.csv",
                        "flightstats_metar_reports.csv"],
@@ -84,7 +85,13 @@ def main():
                        "flightstats_metar_runwaygroups.csv",
                        "flightstats_metar_skyconditions.csv",
                        "flightstats_airsigmetarea.csv"],
-                      ["flightstats_asdiposition.csv"]]
+                      ["flightstats_asdiposition.csv"],
+                      ["flightstats_asdiflightplan.csv",
+                       "flightstats_asdiairway.csv",
+                       "flightstats_asdifpcenter.csv",
+                       "flightstats_asdifpfix.csv",
+                       "flightstats_asdifpsector.csv"],
+                      ["flightstats_asdifpwaypoint.csv"]]
  
     for valid_file_names in import_groups:
         for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:

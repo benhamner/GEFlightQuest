@@ -373,8 +373,6 @@ CREATE OR REPLACE FUNCTION testFlightInformation(cutoffTime TIMESTAMP WITH TIME 
         INNER JOIN flighthistory fh on f.flighthistory_id=fh.id;
     $$ LANGUAGE SQL;
 
-SELECT * FROM testFlightInformation('2013-01-05 20:00:00+00:00');
-
 CREATE OR REPLACE FUNCTION actuallandingcounts(IN tsbegin timestamp with time zone, IN tsend timestamp with time zone)
   RETURNS TABLE(airport_code character varying, runway_arrival timestamp with time zone, count bigint) AS
 $BODY$

@@ -86,12 +86,12 @@ def main():
                        "flightstats_metar_skyconditions.csv",
                        "flightstats_airsigmetarea.csv"],
                       ["flightstats_asdiposition.csv"],
-                      ["flightstats_asdiflightplan.py",
-                       "flightstats_asdiairway.py",
-                       "flightstats_asdifpcenter.py",
-                       "flightstats_asdifpfix.py",
-                       "flightstats_asdifpsector.py"],
-                      ["flightstats_asdifpwaypoint.py"]]
+                      ["flightstats_asdiflightplan.csv",
+                       "flightstats_asdiairway.csv",
+                       "flightstats_asdifpcenter.csv",
+                       "flightstats_asdifpfix.csv",
+                       "flightstats_asdifpsector.csv"],
+                      ["flightstats_asdifpwaypoint.csv"]]
  
     for valid_file_names in import_groups:
         for root, file_name in [(root, file_name) for root, file_name in paths if file_name in valid_file_names]:

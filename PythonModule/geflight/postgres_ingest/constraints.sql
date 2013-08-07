@@ -10,10 +10,6 @@ ALTER TABLE asdiposition ADD PRIMARY KEY (id);
 CREATE INDEX ON asdiposition (flighthistory_id);
 
 ALTER TABLE flighthistoryevents ADD PRIMARY KEY (id);
-ALTER TABLE flighthistoryevents
-ADD CONSTRAINT flighthistoryevents_flighthistory_fk
-FOREIGN KEY (flighthistory_id)
-REFERENCES flighthistory (id) MATCH FULL;
 CREATE INDEX ON flighthistoryevents (flighthistory_id);
 CREATE INDEX ON flighthistoryevents (date_time_recorded);
 

@@ -1,9 +1,13 @@
-
 ALTER TABLE flighthistory ADD PRIMARY KEY (id);
 CREATE INDEX ON flighthistory (departure_airport_icao_code);
 CREATE INDEX ON flighthistory (arrival_airport_icao_code);
 CREATE INDEX ON flighthistory (actual_runway_departure);
 CREATE INDEX ON flighthistory (actual_runway_arrival);
+
+ALTER TABLE metar_reports ADD PRIMARY KEY (id);
+
+ALTER TABLE asdiposition ADD PRIMARY KEY (id);
+CREATE INDEX ON asdiposition (flighthistory_id);
 
 ALTER TABLE flighthistoryevents ADD PRIMARY KEY (id);
 ALTER TABLE flighthistoryevents
@@ -56,15 +60,6 @@ ADD CONSTRAINT asdifpwaypoint_asdiflightplan_fk
 FOREIGN KEY (asdiflightplan_id)
 REFERENCES asdifpwaypoint (id) MATCH FULL;
 CREATE INDEX ON asdifpwaypoint (asdiflightplan_id);
-
-ALTER TABLE asdiposition ADD PRIMARY KEY (id);
-ALTER TABLE asdiposition
-ADD CONSTRAINT asdiposition_flighthistory_fk
-FOREIGN KEY (flighthistory_id)
-REFERENCES flighthistory (id) MATCH FULL;
-CREATE INDEX ON asdiposition (flighthistory_id);
-
-ALTER TABLE metar_reports ADD PRIMARY KEY (id);
 
 ALTER TABLE airsigmet ADD PRIMARY KEY (airsigmetid);
 

@@ -552,12 +552,17 @@ $BODY$;
 CREATE OR REPLACE FUNCTION wind_gusts(airport character varying, ts timestamp with time zone)
   RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
 $BODY$
+  WITH gusts AS (
   SELECT wind_gusts
   FROM metar_reports
   WHERE date_time_issued <= $2
     AND weather_station_code = $1
     AND wind_gusts IS NOT NULL
   ORDER BY date_time_issued DESC
+  LIMIT 1)
+  SELECT wind_gusts from gusts
+  UNION
+  SELECT 0.0 WHERE NOT EXISTS (SELECT wind_gusts from gusts)
   LIMIT 1;
 $BODY$;
 

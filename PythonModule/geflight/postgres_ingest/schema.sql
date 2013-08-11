@@ -506,3 +506,64 @@ ALTER FUNCTION scheduledlandingcounts(timestamp with time zone, timestamp with t
 -- Function: testflightids(timestamp with time zone)
 
 -- DROP FUNCTION testflightids(timestamp with time zone);
+
+
+CREATE OR REPLACE FUNCTION dewpoint(airport character varying, ts timestamp with time zone)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+  SELECT dewpoint
+  FROM metar_reports
+  WHERE date_time_issued <= $2
+    AND weather_station_code = $1
+    AND dewpoint IS NOT NULL
+  ORDER BY date_time_issued DESC
+  LIMIT 1;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION wind_speed(airport character varying, ts timestamp with time zone)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+  SELECT wind_speed
+  FROM metar_reports
+  WHERE date_time_issued <= $2
+    AND weather_station_code = $1
+    AND wind_speed IS NOT NULL
+  ORDER BY date_time_issued DESC
+  LIMIT 1;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION visibility(airport character varying, ts timestamp with time zone)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+  SELECT visibility
+  FROM metar_reports
+  WHERE date_time_issued <= $2
+    AND weather_station_code = $1
+    AND visibility IS NOT NULL
+  ORDER BY date_time_issued DESC
+  LIMIT 1;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION wind_gusts(airport character varying, ts timestamp with time zone)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+  SELECT wind_gusts
+  FROM metar_reports
+  WHERE date_time_issued <= $2
+    AND weather_station_code = $1
+    AND wind_gusts IS NOT NULL
+  ORDER BY date_time_issued DESC
+  LIMIT 1;
+$BODY$;
+
+CREATE OR REPLACE FUNCTION temperature(airport character varying, ts timestamp with time zone)
+  RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
+$BODY$
+  SELECT temperature
+  FROM metar_reports
+  WHERE date_time_issued <= $2
+    AND weather_station_code = $1
+    AND temperature IS NOT NULL
+  ORDER BY date_time_issued DESC
+  LIMIT 1;
+$BODY$;

@@ -535,12 +535,17 @@ $BODY$;
 CREATE OR REPLACE FUNCTION visibility(airport character varying, ts timestamp with time zone)
   RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS
 $BODY$
+  WITH vis AS (
   SELECT visibility
   FROM metar_reports
   WHERE date_time_issued <= $2
     AND weather_station_code = $1
     AND visibility IS NOT NULL
   ORDER BY date_time_issued DESC
+  LIMIT 1)
+  SELECT visibility from vis
+  UNION
+  SELECT 0.0 WHERE NOT EXISTS (SELECT visibility from vis)
   LIMIT 1;
 $BODY$;
 

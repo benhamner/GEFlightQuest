@@ -325,14 +325,15 @@ CREATE OR REPLACE FUNCTION testFlightIds(cutoffTime TIMESTAMP WITH TIME ZONE)
         WITH flights (id) AS (
             SELECT id
             FROM flighthistory fh
-            WHERE actual_runway_departure   IS NOT NULL
-              AND actual_runway_arrival     IS NOT NULL
-              AND scheduled_runway_arrival  IS NOT NULL
-              AND scheduled_gate_arrival    IS NOT NULL
-    		  AND scheduled_gate_departure  IS NOT NULL
-			  AND actual_gate_departure     IS NOT NULL
-              AND actual_runway_departure   < $1
-              AND actual_runway_arrival     > $1)
+            WHERE actual_runway_departure    IS NOT NULL
+              AND actual_runway_arrival      IS NOT NULL
+              AND scheduled_runway_arrival   IS NOT NULL
+              AND scheduled_gate_arrival     IS NOT NULL
+              AND scheduled_gate_departure   IS NOT NULL
+              AND actual_gate_departure      IS NOT NULL
+              AND diverted_airport_icao_code IS NULL
+              AND actual_runway_departure    < $1
+              AND actual_runway_arrival      > $1)
         SELECT f.id,
                max(p.id)
         FROM flights f

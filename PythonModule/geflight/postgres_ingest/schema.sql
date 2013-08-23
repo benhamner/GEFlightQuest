@@ -466,19 +466,6 @@ where
 	fh.arrival_airport_icao_code in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')
 	and fh.scheduled_runway_arrival > $1
 	and fh.scheduled_runway_arrival < $2
-	and fh.actual_runway_arrival is not null
-	and fh.departure_airport_icao_code 
-	in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')	
-	and fh.actual_runway_departure is not null
-	and fh.scheduled_runway_departure is not null
-	and fh.scheduled_gate_departure is not null
-	and fh.actual_gate_departure is not null
-	and fh.published_arrival is not null
-	and fh.scheduled_gate_arrival is not null
-	and fh.actual_gate_arrival is not null
-	and fh.scheduled_air_time is not null
-	and fh.scheduled_block_time is not null
-	and fh.icao_aircraft_type_actual is not null
 group by
 	fh.scheduled_runway_arrival,
 	fh.arrival_airport_icao_code

@@ -1,3 +1,5 @@
+-- DEPRECATED CODE. See create_weather_test_set.sql
+
 -- ============================================================
 -- Script to create test (leaderboard) weather data
 -- Created: 8-Aug-2013

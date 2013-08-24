@@ -482,6 +482,31 @@ ALTER FUNCTION scheduledlandingcounts(timestamp with time zone, timestamp with t
 
 -- DROP FUNCTION testflightids(timestamp with time zone);
 
+CREATE OR REPLACE FUNCTION actualtakeoffcounts(IN tsbegin timestamp with time zone, IN tsend timestamp with time zone)
+  RETURNS TABLE(airport_code character varying, runway_arrival timestamp with time zone, count bigint) AS
+$BODY$
+select
+	departure_airport_icao_code as airport_code,
+	actual_runway_departure as runway_departure,
+	count(*) as count
+from flighthistory fh
+where
+	fh.departure_airport_icao_code in ('KBOS', 'KJFK', 'KLGA', 'KEWR', 'KPHL', 'KBWI', 'KIAD', 'KDCA', 'KBNA', 'KMEM', 'KATL', 'KRDU', 'KCLT', 'KMCO', 'KMIA', 'KFLL', 'KTPA', 'KRSW', 'KPBI', 'KORD', 'KMDW', 'KDTW', 'KCLE', 'KCMH', 'KCVG', 'KIND', 'KMKE', 'KMSP', 'KSDF', 'KDSM', 'KCID', 'KDFW', 'KDAL', 'KIAH', 'KHOU', 'KMSY', 'KSTL', 'KMCI', 'KABQ', 'KELP', 'KOKC', 'KTUL', 'KLIT', 'KXNA', 'KSEA', 'KPDX', 'KDEN', 'KCOS', 'KSLC', 'KSFO', 'KSJC', 'KOAK', 'KLAX', 'KLGB', 'KSNA', 'KONT', 'KBUR', 'KPSP', 'KSAN', 'KFAT', 'KSMF', 'KPHX', 'KTUS')
+	and fh.actual_runway_departure > $1
+	and fh.actual_runway_departure < $2
+group by
+	fh.actual_runway_departure,
+	fh.departure_airport_icao_code
+order by 	
+	fh.actual_runway_departure
+$BODY$
+  LANGUAGE sql VOLATILE
+  COST 100
+  ROWS 1000;
+ALTER FUNCTION actualtakeoffcounts(timestamp with time zone, timestamp with time zone)
+  OWNER TO postgres;
+
+-- --------------------------------------------------------------
 
 CREATE OR REPLACE FUNCTION dewpoint(airport character varying, ts timestamp with time zone)
   RETURNS DOUBLE PRECISION STABLE LANGUAGE SQL AS

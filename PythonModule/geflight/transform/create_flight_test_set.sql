@@ -125,11 +125,14 @@ begin
         cutoff = val::timestamptz(0);
         return query
         select * from basetest_flighthistory where 
-            (published_departure >= set_start_time(cutoff) and published_departure < cutoff)
+            (actual_gate_departure >= set_start_time(cutoff) and actual_gate_departure < cutoff)
             or
-            (published_departure is null and scheduled_gate_departure >= set_start_time(cutoff) and scheduled_gate_departure < cutoff)
-            or 
-            (published_departure is null and scheduled_gate_departure is null and 
+            (actual_gate_departure is null and scheduled_gate_departure >= set_start_time(cutoff) and scheduled_gate_departure < cutoff)
+            or
+            (actual_gate_departure is null and  scheduled_gate_departure is null and 
+                published_departure >= set_start_time(cutoff) and published_departure < cutoff)
+            or
+            (actual_gate_departure is null and scheduled_gate_departure is null and published_departure is null and
                 scheduled_runway_departure >= set_start_time(cutoff) and scheduled_runway_departure < cutoff);
     end loop;
 end;

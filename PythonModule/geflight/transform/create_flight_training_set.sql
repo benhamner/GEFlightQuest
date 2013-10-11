@@ -14,7 +14,12 @@
 --   3. Select columns, total 26
 -- ==============================================================
 
-CREATE OR REPLACE VIEW training1_flighthistory AS SELECT 
+
+-- create base flight history with only 26 columns, in the proper date
+-- range and for only US airports.
+drop table if exists base_flighthistory;
+CREATE table base_flighthistory AS 
+SELECT 
     id,
     airline_code, 
     airline_icao_code, 
@@ -41,64 +46,91 @@ CREATE OR REPLACE VIEW training1_flighthistory AS SELECT
     scheduled_aircraft_type, 
     actual_aircraft_type, 
     icao_aircraft_type_actual
-FROM flighthistory 
-WHERE 
+FROM flighthistory
+where
     (
-        published_departure < '2013-07-05 09:00:00+00'
-        OR ( published_departure IS NULL AND scheduled_gate_departure < '2013-07-05 09:00:00+00' )
-        OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure < '2013-07-05 09:00:00+00' ) 
+    published_departure >= '2013-08-14 09:00:00+00'
+    OR ( published_departure IS NULL AND scheduled_gate_departure >= '2013-08-14 09:00:00+00' )
+    OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure >= '2013-08-14 09:00:00+00' ) 
     )
-    AND (departure_airport_icao_code LIKE 'K%' AND arrival_airport_icao_code LIKE 'K%');
+    AND (departure_airport_icao_code LIKE 'K%' AND arrival_airport_icao_code LIKE 'K%')
+;
 
-create table flighthistory_ids as select id from training1_flighthistory;
-create or replace view training1_flighthistoryevents as
+-- Training: flighthistory
+drop table if exists training2_flighthistory;
+CREATE table training2_flighthistory as 
+    select * from base_flighthistory WHERE 
+        (
+            published_departure < '2013-09-11 09:00:00+00'
+            OR ( published_departure IS NULL AND scheduled_gate_departure < '2013-09-11 09:00:00+00' )
+            OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure < '2013-09-11 09:00:00+00' ) 
+        );
+
+ -- flighthistory ids
+drop table if exists flighthistory_ids;
+create table flighthistory_ids as select id from training2_flighthistory;
+
+
+-- Training: flighthistoryevents
+drop table if exists training2_flighthistoryevents;
+create table training2_flighthistoryevents as
     select * from flighthistoryevents where 
         flighthistory_id in (select * from flighthistory_ids);
 
+
 -- ASDI flight plan, uses flighthistory_id)
-select * from asdiflightplan limit 20
-create or replace view training1_asdiflightplan as
+drop table if exists training2_asdiflightplan;
+create table training2_asdiflightplan as
     select * from asdiflightplan where
         flighthistory_id in (select id from flighthistory_ids);
 
+
 -- ASDI Flight Plan IDs
-create table asdiflightplan_ids as select id from training1_asdiflightplan;
+drop table if exists asdiflightplan_ids;
+create table asdiflightplan_ids as select id from training2_asdiflightplan;
 
 -- ASDI airway
-create or replace view training1_asdiairway as
+drop table if exists training2_asdiairway;
+create table training2_asdiairway as
     select * from asdiairway where
         asdiflightplan_id in (select * from asdiflightplan_ids);
 -- ASDI FP Fix
-create or replace view training1_asdifpfix as
+drop table if exists training2_asdifpfix;
+create table training2_asdifpfix as
     select * from asdifpfix where
         asdiflightplan_id in (select * from asdiflightplan_ids);
 -- ASDI FP Center
-create or replace view training1_asdifpcenter as
+drop table if exists training2_asdifpcenter;
+create table training2_asdifpcenter as
     select * from asdifpcenter where
         asdiflightplan_id in (select * from asdiflightplan_ids);
 -- ASDI FP Sector
-create or replace view training1_asdifpsector as
+drop table if exists training2_asdifpsector;
+create table training2_asdifpsector as
     select * from asdifpsector where
         asdiflightplan_id in (select * from asdiflightplan_ids);
 -- ASDI Position (uses flighthistoryid)
-create or replace view training1_asdiposition as
+drop table if exists training2_asdiposition;
+create table training2_asdiposition as
     select * from asdiposition where
         flighthistory_id in (select * from flighthistory_ids);
 -- ASDI FP Waypoint
-create or replace view training1_asdifpwaypoint as
+drop table if exists training2_asdifpwaypoint;
+create table training2_asdifpwaypoint as
     select * from asdifpwaypoint where
         asdiflightplan_id in (select * from asdiflightplan_ids);
 
 
 -- Write to file
-copy (select * from training1_flighthistoryevents) to '/mnt/out/training1_flighthistoryevents.csv' delimiter ',' csv header;
-copy (select * from training1_asdiairway) to '/mnt/out/training1_asdiairway.csv' delimiter ',' csv header; 
-copy (select * from training1_asdiflightplan) to '/mnt/out/training1_asdiflightplan.csv' delimiter ',' csv header; 
-copy (select * from training1_asdifpcenter) to '/mnt/out/training1_asdifpcenter.csv' delimiter ',' csv header; 
-copy (Select * from training1_asdifpfix) to '/mnt/out/training1_asdifpfix.csv' delimiter ',' csv header; 
-copy (select * from training1_asdifpsector) to '/mnt/out/training1_asdifpsector.csv' delimiter ',' csv header; 
-copy (select * from training1_asdifpwaypoint) to '/mnt/out/training1_asdifpwaypoint.csv' delimiter ',' csv header; 
-copy (select * from training1_asdiposition) to '/mnt/out/training1_asdiposition.csv' delimiter ',' csv header;
+copy (select * from training2_flighthistory) to 'C:/FQ2DataRelease2/training2_flighthistory.csv' delimiter ',' csv header;
+copy (select * from training2_flighthistoryevents) to 'C:/FQ2DataRelease2/training2_flighthistoryevents.csv' delimiter ',' csv header;
+copy (select * from training2_asdiairway) to 'C:/FQ2DataRelease2/training2_asdiairway.csv' delimiter ',' csv header; 
+copy (select * from training2_asdiflightplan) to 'C:/FQ2DataRelease2/training2_asdiflightplan.csv' delimiter ',' csv header; 
+copy (select * from training2_asdifpcenter) to 'C:/FQ2DataRelease2/training2_asdifpcenter.csv' delimiter ',' csv header; 
+copy (Select * from training2_asdifpfix) to 'C:/FQ2DataRelease2/training2_asdifpfix.csv' delimiter ',' csv header; 
+copy (select * from training2_asdifpsector) to 'C:/FQ2DataRelease2/training2_asdifpsector.csv' delimiter ',' csv header; 
+copy (select * from training2_asdifpwaypoint) to 'C:/FQ2DataRelease2/training2_asdifpwaypoint.csv' delimiter ',' csv header; 
+copy (select * from training2_asdiposition) to 'C:/FQ2DataRelease2/training2_asdiposition.csv' delimiter ',' csv header;
 
 
 
@@ -109,32 +141,36 @@ copy (select * from training1_asdiposition) to '/mnt/out/training1_asdiposition.
 --      * presentconditions, skyconditions, runwayconditions
 -- ===============================================================
 -- metar_reports: create view with training date constraints
-create or replace view training1_metar_reports as ( 
+drop table if exists training2_metar_reports;
+create table training2_metar_reports as ( 
     select * from metar_reports where
-    date_time_issued >= '2013-06-07 09:00:00+00' and date_time_issued < '2013-07-05 09:00:00+00'
+    date_time_issued >= '2013-08-14 09:00:00+00' and date_time_issued < '2013-09-11 09:00:00+00'
 );
 
 -- presentconditions
-create or replace view training1_metar_presentconditions as (
+drop table if exists training2_metar_presentconditions;
+create table training2_metar_presentconditions as (
     select * from metar_presentconditions
-    where metar_reports_id in (select id from training1_metar_reports)
+    where metar_reports_id in (select id from training2_metar_reports)
 );
 -- skyconditions
-create or replace view training1_metar_skyconditions as (
+drop table if exists training2_metar_skyconditions;
+create table training2_metar_skyconditions as (
     select * from metar_skyconditions
-    where metar_reports_id in (select id from training1_metar_reports)
+    where metar_reports_id in (select id from training2_metar_reports)
 );
 
 -- runwayconditions
-create or replace view training1_metar_runwaygroups as (
+drop table if exists training2_metar_runwaygroups;
+create table training2_metar_runwaygroups as (
     select * from metar_runwaygroups
-    where metar_reports_id in (select id from training1_metar_reports)
+    where metar_reports_id in (select id from training2_metar_reports)
 );
 
-copy (select * from training1_metar_reports) to '/mnt/out/training1_metar_reports.csv' delimiter ',' csv header;
-copy (select * from training1_metar_presentconditions) to '/mnt/out/training1_metar_presentconditions.csv' delimiter ',' csv header;
-copy (select * from training1_metar_skyconditions) to '/mnt/out/training1_metar_skyconditions.csv' delimiter ',' csv header;
-copy (select * from training1_metar_runwaygroups) to '/mnt/out/training1_metar_runwaygroups.csv' delimiter ',' csv header;
+copy (select * from training2_metar_reports) to 'C:/FQ2DataRelease2/training2_metar_reports.csv' delimiter ',' csv header;
+copy (select * from training2_metar_presentconditions) to 'C:/FQ2DataRelease2/training2_metar_presentconditions.csv' delimiter ',' csv header;
+copy (select * from training2_metar_skyconditions) to 'C:/FQ2DataRelease2/training2_metar_skyconditions.csv' delimiter ',' csv header;
+copy (select * from training2_metar_runwaygroups) to 'C:/FQ2DataRelease2/training2_metar_runwaygroups.csv' delimiter ',' csv header;
 
 
 -- ===============================================================
@@ -148,31 +184,35 @@ copy (select * from training1_metar_runwaygroups) to '/mnt/out/training1_metar_r
 --          This is because NOAA has changed the name of their product
 --          to FDwind but did not change column headers
 -- ===============================================================
-create or replace view training1_fdwindreport as (
+drop table if exists training2_fdwindreport;
+create table training2_fdwindreport as (
     select * from fdwindreport where
-    createdutc >= '2013-06-07 09:00:00' and createdutc < '2013-07-05 09:00:00'
+    createdutc >= '2013-08-14 09:00:00+00' and createdutc < '2013-09-11 09:00:00+00'
 );
 -- airport using report ids
-create or replace view training1_fdwindairport as (
+drop table if exists training2_fdwindairport;
+create table training2_fdwindairport as (
     select * from fdwindairport where fbwindreportid in 
-        (select fbwindreportid from training1_fdwindreport)
+        (select fbwindreportid from training2_fdwindreport)
 );
 
 -- altitude uses report ids
-create or replace view training1_fdwindaltitude as (
+drop table if exists training2_fdwindaltitude;
+create table training2_fdwindaltitude as (
     select * from fdwindaltitude where fbwindreportid in 
-        (select fbwindreportid from training1_fdwindreport)
+        (select fbwindreportid from training2_fdwindreport)
 );
 -- wind using airport ids
-create or replace view training1_fdwind as (
+drop table if exists training2_fdwind;
+create table training2_fdwind as (
     select * from fdwind where fbwindairportid in
-        (SELECT fbwindairportid from training1_fdwindairport)
+        (SELECT fbwindairportid from training2_fdwindairport)
 );
 
-copy (select * from training1_fdwindreport) to '/mnt/out/training1_fdwindreport.csv' delimiter ',' csv header;
-copy (select * from training1_fdwindairport) to '/mnt/out/training1_fdwindairport.csv' delimiter ',' csv header;
-copy (select * from training1_fdwindaltitude) to '/mnt/out/training1_fdwindaltitude.csv' delimiter ',' csv header;
-copy (select * from training1_fdwind) to '/mnt/out/training1_fdwind.csv' delimiter ',' csv header;
+copy (select * from training2_fdwindreport) to 'C:/FQ2DataRelease2/training2_fdwindreport.csv' delimiter ',' csv header;
+copy (select * from training2_fdwindairport) to 'C:/FQ2DataRelease2/training2_fdwindairport.csv' delimiter ',' csv header;
+copy (select * from training2_fdwindaltitude) to 'C:/FQ2DataRelease2/training2_fdwindaltitude.csv' delimiter ',' csv header;
+copy (select * from training2_fdwind) to 'C:/FQ2DataRelease2/training2_fdwind.csv' delimiter ',' csv header;
 
 -- ===============================================================
 -- TAF
@@ -180,57 +220,65 @@ copy (select * from training1_fdwind) to '/mnt/out/training1_fdwind.csv' delimit
 -- 2. Use tafid to filter in order:
 --    * taf forecast, icing, sky, temp, turbulence
 -- ===============================================================
-create or replace view training1_taf as (
+drop table if exists training2_taf;
+create table training2_taf as (
     select * from taf where 
-    bulletintimeutc >= '2013-06-07 09:00:00' and bulletintimeutc < '2013-07-05 09:00:00'
+    bulletintimeutc >= '2013-08-14 09:00:00+00' and bulletintimeutc < '2013-09-11 09:00:00+00'
 );
 -- taf forecast on taf ids
-create or replace view training1_tafforecast as (
+drop table if exists training2_tafforecast;
+CREATE TABLE training2_tafforecast as (
     select * from tafforecast where tafid in
-        (select tafid from training1_taf)
+        (select tafid from training2_taf)
 );
 -- taf icing, sky, temp, turbulence on tafforecastid
-create or replace view training1_taficing as (
+drop table if exists training2_taficing;
+CREATE TABLE training2_taficing as (
     select * from taficing where tafforecastid in
-        (select tafforecastid from training1_tafforecast)
+        (select tafforecastid from training2_tafforecast)
 );
-create or replace view training1_tafsky as (
+drop table if exists training2_tafsky;
+CREATE TABLE training2_tafsky as (
     select * from tafsky where tafforecastid in
-        (select tafforecastid from training1_tafforecast)
+        (select tafforecastid from training2_tafforecast)
 );
-create or replace view training1_taftemperature as (
+drop table if exists training2_taftemperature;
+CREATE TABLE training2_taftemperature as (
     select * from taftemperature where tafforecastid in
-        (select tafforecastid from training1_tafforecast)
+        (select tafforecastid from training2_tafforecast)
 );
-create or replace view training1_tafturbulence as (
+drop table if exists training2_tafturbulence;
+CREATE TABLE training2_tafturbulence as (
     select * from tafturbulence where tafforecastid in
-        (select tafforecastid from training1_tafforecast)
+        (select tafforecastid from training2_tafforecast)
 );
 
-copy (select * from training1_taf) to '/mnt/out/training1_taf.csv' delimiter ',' csv header;
-copy (select * from training1_tafforecast) to '/mnt/out/training1_tafforecast.csv' delimiter ',' csv header;
-copy (select * from training1_taficing) to '/mnt/out/training1_taficing.csv' delimiter ',' csv header;
-copy (select * from training1_tafsky) to '/mnt/out/training1_tafsky.csv' delimiter ',' csv header;
-copy (select * from training1_taftemperature) to '/mnt/out/training1_taftemperature.csv' delimiter ',' csv header;
-copy (select * from training1_tafturbulence) to '/mnt/out/training1_tafturbulence.csv' delimiter ',' csv header;
+copy (select * from training2_taf) to 'C:/FQ2DataRelease2/training2_taf.csv' delimiter ',' csv header;
+copy (select * from training2_tafforecast) to 'C:/FQ2DataRelease2/training2_tafforecast.csv' delimiter ',' csv header;
+copy (select * from training2_taficing) to 'C:/FQ2DataRelease2/training2_taficing.csv' delimiter ',' csv header;
+copy (select * from training2_tafsky) to 'C:/FQ2DataRelease2/training2_tafsky.csv' delimiter ',' csv header;
+copy (select * from training2_taftemperature) to 'C:/FQ2DataRelease2/training2_taftemperature.csv' delimiter ',' csv header;
+copy (select * from training2_tafturbulence) to 'C:/FQ2DataRelease2/training2_tafturbulence.csv' delimiter ',' csv header;
 
 -- ===============================================================
 -- AIRSIGMET
 -- 1. Filter airsigmet on training dates, Need ids
 -- 2. Filter airsigmetarea using airsigmet ids
 -- ===============================================================
-create or replace view training1_airsigmet as (
+drop table if exists training2_airsigmet;
+CREATE TABLE training2_airsigmet as (
     select * from airsigmet where
-    timevalidfromutc >= '2013-06-07 09:00:00' 
-    and timevalidfromutc < '2013-07-05 09:00:00'
+    timevalidfromutc >= '2013-08-14 09:00:00+00'
+    and timevalidfromutc < '2013-09-11 09:00:00+00'
 );
 -- airsigmetarea
-create or replace view training1_airsigmetarea as (
+drop table if exists training2_airsigmetarea;
+CREATE TABLE training2_airsigmetarea as (
     select * from airsigmetarea where 
-    airsigmetid in (select airsigmetid from training1_airsigmet)
+    airsigmetid in (select airsigmetid from training2_airsigmet)
 );
 
-copy (select * from training1_airsigmet) to '/mnt/out/training1_airsigmet.csv' delimiter ',' csv header;
-copy (select * from training1_airsigmetarea) to '/mnt/out/training1_airsigmetarea.csv' delimiter ',' csv header;
+copy (select * from training2_airsigmet) to 'C:/FQ2DataRelease2/training2_airsigmet.csv' delimiter ',' csv header;
+copy (select * from training2_airsigmetarea) to 'C:/FQ2DataRelease2/training2_airsigmetarea.csv' delimiter ',' csv header;
 
  

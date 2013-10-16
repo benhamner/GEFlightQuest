@@ -13,45 +13,47 @@
 --   original_arrival_utc
 --   estimated_arrival_utc
 -- -------------------------------------------------------------------------
+-- OK
 update asdiflightplan
-set estimated_departure_utc = estimated_departure_utc - (interval '-7 hours');
---where estimated_departure_utc is not null;
+set estimated_departure_utc = estimated_departure_utc + (interval '-7 hours');
+--WHERE estimated_departure_utc is not null;
 
 update asdiflightplan
-set original_departure_utc = original_departure_utc - (interval '-7 hours');
---where original_departure_utc is not null;
+set original_departure_utc = original_departure_utc + (interval '-7 hours');
+--WHERE original_departure_utc is not null;
 
 update asdiflightplan
-set original_arrival_utc = original_arrival_utc - (interval '-7 hours');
---where original_arrival_utc is not null;
+set original_arrival_utc = original_arrival_utc + (interval '-7 hours');
+--WHERE original_arrival_utc is not null;
 
 update asdiflightplan
-set estimated_arrival_utc = estimated_arrival_utc - (interval '-7 hours');
---where estimated_arrival_utc is not null;
+set estimated_arrival_utc = estimated_arrival_utc + (interval '-7 hours');
+--WHERE estimated_arrival_utc is not null;
+
 
 -- -------------------------------------------------------------------------
 -- ASDI Position: col is
 -- received
 -- -------------------------------------------------------------------------
 update asdiposition
-set received = received - (interval '-7 hours');
---where received is not null;
+set received = received + (interval '-7 hours');
+--WHERE received is not null;
 
 -- -------------------------------------------------------------------------
 -- FD Wind Report: cols is
 -- createdutc
 -- -------------------------------------------------------------------------
 update fdwindreport 
-set createdutc = createdutc - (interval '-7 hours');
---where createdutc is not null;
+set createdutc = createdutc + (interval '-7 hours');
+--WHERE createdutc is not null;
 
 -- -------------------------------------------------------------------------
 -- Metar Report: cols is
 -- date_time_issued
 -- -------------------------------------------------------------------------
 update metar_reports 
-set date_time_issued = date_time_issued - (interval '-7 hours');
---where date_time_issued is not null;
+set date_time_issued = date_time_issued + (interval '-7 hours');
+--WHERE date_time_issued is not null;
 
 -- -------------------------------------------------------------------------
 -- Taf: cols are
@@ -61,20 +63,20 @@ set date_time_issued = date_time_issued - (interval '-7 hours');
 -- validtimetoutc
 -- -------------------------------------------------------------------------
 update taf 
-set issuetimeutc = issuetimeutc - (interval '-7 hours');
---where issuetimeutc is not null;
+set issuetimeutc = issuetimeutc + (interval '-7 hours');
+--WHERE issuetimeutc is not null;
 
 update taf 
-set bulletintimeutc = bulletintimeutc - (interval '-7 hours');
---where bulletintimeutc is not null;
+set bulletintimeutc = bulletintimeutc + (interval '-7 hours');
+--WHERE bulletintimeutc is not null;
 
 update taf 
-set validtimefromutc = validtimefromutc - (interval '-7 hours');
---where validtimefromutc is not null;
+set validtimefromutc = validtimefromutc + (interval '-7 hours');
+--WHERE validtimefromutc is not null;
 
 update taf 
-set validtimetoutc = validtimetoutc - (interval '-7 hours');
---where validtimetoutc is not null;
+set validtimetoutc = validtimetoutc + (interval '-7 hours');
+--WHERE validtimetoutc is not null;
 
 -- -------------------------------------------------------------------------
 -- Tafforecast: cols are
@@ -82,17 +84,17 @@ set validtimetoutc = validtimetoutc - (interval '-7 hours');
 -- forecasttimetoutc
 -- -------------------------------------------------------------------------
 update tafforecast 
-set forecasttimefromutc = forecasttimefromutc - (interval '-7 hours');
---where forecasttimefromutc is not null;
+set forecasttimefromutc = forecasttimefromutc + (interval '-7 hours');
+--WHERE forecasttimefromutc is not null;
 
 update tafforecast 
-set forecasttimetoutc = forecasttimetoutc - (interval '-7 hours');
---where forecasttimetoutc is not null;
+set forecasttimetoutc = forecasttimetoutc + (interval '-7 hours');
+--WHERE forecasttimetoutc is not null;
 
 -- -------------------------------------------------------------------------
 -- Taftemperature: cols are
 -- validtimeutc
 -- -------------------------------------------------------------------------
 update taftemperature
-set validtimeutc = validtimeutc - (interval '-7 hours');
---where validtimeutc is not null;
+set validtimeutc = validtimeutc + (interval '-7 hours');
+--WHERE validtimeutc is not null;

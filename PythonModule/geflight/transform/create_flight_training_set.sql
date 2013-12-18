@@ -49,9 +49,9 @@ SELECT
 FROM flighthistory
 where
     (
-    published_departure >= '2013-08-14 09:00:00+00'
-    OR ( published_departure IS NULL AND scheduled_gate_departure >= '2013-08-14 09:00:00+00' )
-    OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure >= '2013-08-14 09:00:00+00' ) 
+    published_departure >= '2013-11-14 09:00:00+00'
+    OR ( published_departure IS NULL AND scheduled_gate_departure >= '2013-11-14 09:00:00+00' )
+    OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure >= '2013-11-14 09:00:00+00' ) 
     )
     AND (departure_airport_icao_code LIKE 'K%' AND arrival_airport_icao_code LIKE 'K%')
 ;
@@ -61,9 +61,9 @@ drop table if exists training2_flighthistory;
 CREATE table training2_flighthistory as 
     select * from base_flighthistory WHERE 
         (
-            published_departure < '2013-09-11 09:00:00+00'
-            OR ( published_departure IS NULL AND scheduled_gate_departure < '2013-09-11 09:00:00+00' )
-            OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure < '2013-09-11 09:00:00+00' ) 
+            published_departure < '2013-12-12 09:00:00+00'
+            OR ( published_departure IS NULL AND scheduled_gate_departure < '2013-12-12 09:00:00+00' )
+            OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure < '2013-12-12 09:00:00+00' ) 
         );
 
  -- flighthistory ids
@@ -144,7 +144,7 @@ copy (select * from training2_asdiposition) to 'C:/FQ2DataRelease2/training2_asd
 drop table if exists training2_metar_reports;
 create table training2_metar_reports as ( 
     select * from metar_reports where
-    date_time_issued >= '2013-08-14 09:00:00+00' and date_time_issued < '2013-09-11 09:00:00+00'
+    date_time_issued >= '2013-11-14 09:00:00+00' and date_time_issued < '2013-12-12 09:00:00+00'
 );
 
 -- presentconditions
@@ -187,7 +187,7 @@ copy (select * from training2_metar_runwaygroups) to 'C:/FQ2DataRelease2/trainin
 drop table if exists training2_fdwindreport;
 create table training2_fdwindreport as (
     select * from fdwindreport where
-    createdutc >= '2013-08-14 09:00:00+00' and createdutc < '2013-09-11 09:00:00+00'
+    createdutc >= '2013-11-14 09:00:00+00' and createdutc < '2013-12-12 09:00:00+00'
 );
 -- airport using report ids
 drop table if exists training2_fdwindairport;
@@ -223,7 +223,7 @@ copy (select * from training2_fdwind) to 'C:/FQ2DataRelease2/training2_fdwind.cs
 drop table if exists training2_taf;
 create table training2_taf as (
     select * from taf where 
-    bulletintimeutc >= '2013-08-14 09:00:00+00' and bulletintimeutc < '2013-09-11 09:00:00+00'
+    bulletintimeutc >= '2013-11-14 09:00:00+00' and bulletintimeutc < '2013-12-12 09:00:00+00'
 );
 -- taf forecast on taf ids
 drop table if exists training2_tafforecast;
@@ -268,8 +268,8 @@ copy (select * from training2_tafturbulence) to 'C:/FQ2DataRelease2/training2_ta
 drop table if exists training2_airsigmet;
 CREATE TABLE training2_airsigmet as (
     select * from airsigmet where
-    timevalidfromutc >= '2013-08-14 09:00:00+00'
-    and timevalidfromutc < '2013-09-11 09:00:00+00'
+    timevalidfromutc >= '2013-11-14 09:00:00+00'
+    and timevalidfromutc < '2013-12-12 09:00:00+00'
 );
 -- airsigmetarea
 drop table if exists training2_airsigmetarea;

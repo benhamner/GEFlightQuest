@@ -53,7 +53,7 @@ where
     OR ( published_departure IS NULL AND scheduled_gate_departure >= '2013-11-14 09:00:00+00' )
     OR ( published_departure IS NULL AND scheduled_gate_departure IS NULL AND scheduled_runway_departure >= '2013-11-14 09:00:00+00' ) 
     )
-    AND (departure_airport_icao_code LIKE 'K%' AND arrival_airport_icao_code LIKE 'K%')
+    AND (departure_airport_icao_code LIKE 'K%' OR arrival_airport_icao_code LIKE 'K%')
 ;
 
 -- Training: flighthistory
